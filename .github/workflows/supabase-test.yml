@@ -23,7 +23,7 @@ jobs:
 
       - name: Start Supabase
         run: |
-          supabase init
+          supabase init --force
           supabase start
           supabase db reset
           sleep 10  # データベースの準備が完了するまで待機
