@@ -13,25 +13,31 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+    
     steps:
       - uses: actions/checkout@v4
+      
+      # Dockerイメージのキャッシュを設定
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
+      - name: Cache Docker images
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Supabaseのキャッシュを設定
+      - name: Cache Supabase
+        uses: actions/cache@v3
+        with:
+          path: ~/.supabase
+          key: ${{ runner.os }}-supabase-${{ hashFiles('supabase/**') }}
+          restore-keys: |
+            ${{ runner.os }}-supabase-
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -39,20 +45,31 @@ jobs:
           cache: 'npm'
           cache-dependency-path: supabase/package-lock.json
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
       - name: Install dependencies
         working-directory: ./supabase
         run: npm ci
+      
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
 
       - name: Start Supabase
-        working-directory: ./supabase
         run: |
-          supabase init
-          supabase start
+          supabase init --force
+          DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 supabase start
+          # データベースが起動するまで待機（最大60秒）
+          for i in {1..12}; do
+            if supabase status | grep -q "Database online"; then
+              echo "Database is online"
+              break
+            fi
+            echo "Waiting for database to come online... (attempt $i/12)"
+            sleep 5
+          done
+          # データベースのリセットと初期化
+          supabase db reset
+          # マイグレーション完了を待機（追加で30秒）
+          sleep 30
 
       - name: Run tests
         working-directory: ./supabase
@@ -61,9 +78,7 @@ jobs:
           SUPABASE_URL: http://localhost:54321
           SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
           SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
-          POSTGRES_PASSWORD: postgres
 
       - name: Stop Supabase
         if: always()
-        working-directory: ./supabase
         run: supabase stop 
