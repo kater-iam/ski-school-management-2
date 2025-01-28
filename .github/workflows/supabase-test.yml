@@ -41,8 +41,7 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          curl -fsSL https://cli.supabase.com/install.sh | sh
-          export PATH=/root/.supabase/bin:$PATH
+          npm install -g supabase
           supabase --version
 
       - name: Install dependencies
