@@ -1,3 +1,6 @@
+// シードデータのテスト実行
+// GitHub Actionsでの自動テスト実行を確認するためのテストファイル
+
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '../types/database.types'
 
