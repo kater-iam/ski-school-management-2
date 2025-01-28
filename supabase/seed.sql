@@ -2,24 +2,37 @@
 BEGIN;
 
 -- Import test users
-COPY auth.users (id, email, role)
-FROM '/seed-data/users.csv'
-WITH (FORMAT csv, HEADER true);
+INSERT INTO auth.users (id, email, role) VALUES
+('770e8400-e29b-41d4-a716-446655440000', 'admin@example.com', 'admin'),
+('770e8400-e29b-41d4-a716-446655440001', 'instructor1@example.com', 'instructor'),
+('770e8400-e29b-41d4-a716-446655440002', 'instructor2@example.com', 'instructor'),
+('770e8400-e29b-41d4-a716-446655440003', 'student1@example.com', 'student'),
+('770e8400-e29b-41d4-a716-446655440004', 'student2@example.com', 'student'),
+('770e8400-e29b-41d4-a716-446655440005', 'student3@example.com', 'student');
 
 -- Import profiles
-COPY profiles (id, user_id, first_name, last_name, phone, emergency_contact)
-FROM '/seed-data/profiles.csv'
-WITH (FORMAT csv, HEADER true);
+INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact) VALUES
+('880e8400-e29b-41d4-a716-446655440000', '770e8400-e29b-41d4-a716-446655440000', '管理者', '太郎', '090-1111-1111', '090-1111-1112'),
+('880e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', '山田', '一郎', '090-2222-2221', '090-2222-2222'),
+('880e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', '鈴木', '二郎', '090-3333-3331', '090-3333-3332'),
+('880e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', '佐藤', '花子', '090-4444-4441', '090-4444-4442'),
+('880e8400-e29b-41d4-a716-446655440004', '770e8400-e29b-41d4-a716-446655440004', '田中', '幸子', '090-5555-5551', '090-5555-5552'),
+('880e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440005', '高橋', '三郎', '090-6666-6661', '090-6666-6662');
 
 -- Import lesson levels
-COPY lesson_levels (id, name, description)
-FROM '/seed-data/lesson_levels.csv'
-WITH (FORMAT csv, HEADER true);
+INSERT INTO lesson_levels (id, name, description) VALUES
+('550e8400-e29b-41d4-a716-446655440000', '初級', 'スキーの基本を学ぶ初心者向けレベルです。プルークボーゲンやパラレルターンの基礎を習得します。'),
+('550e8400-e29b-41d4-a716-446655440001', '中級', '基本的なパラレルターンができる方向けのレベルです。カービングターンやスピードコントロールを習得します。'),
+('550e8400-e29b-41d4-a716-446655440002', '上級', 'パラレルターンが安定している方向けの上級者レベルです。不整地やモーグルなどの技術を習得します。');
 
 -- Import lessons
-COPY lessons (id, level_id, name, description, duration, max_participants)
-FROM '/seed-data/lessons.csv'
-WITH (FORMAT csv, HEADER true);
+INSERT INTO lessons (id, level_id, name, description, duration, max_participants) VALUES
+('660e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440000', '初心者スキー教室', 'スキーの基本姿勢から始める初心者向けレッスンです。プルークボーゲンまでを目指します。', 120, 6),
+('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', '初級パラレルターン', 'プルークボーゲンからパラレルターンへの移行を目指すレッスンです。', 120, 6),
+('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440001', 'カービングターン基礎', 'パラレルターンの技術をベースにカービングターンの基礎を学びます。', 120, 4),
+('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440001', 'スピードコントロール', '様々な斜面でのスピードコントロール技術を習得します。', 120, 4),
+('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440002', '不整地レッスン', '不整地やコブ斜面での滑走技術を習得します。', 120, 3),
+('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440002', 'フリーライディング', 'バックカントリーやパウダースノーでの滑走技術を学びます。', 180, 3);
 
 -- Commit transaction
 COMMIT; 
