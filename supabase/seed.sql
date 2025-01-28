@@ -3,12 +3,12 @@ BEGIN;
 
 -- Import test users
 INSERT INTO auth.users (id, email, role) VALUES
-('770e8400-e29b-41d4-a716-446655440000', 'admin@example.com', 'admin'),
-('770e8400-e29b-41d4-a716-446655440001', 'instructor1@example.com', 'instructor'),
-('770e8400-e29b-41d4-a716-446655440002', 'instructor2@example.com', 'instructor'),
-('770e8400-e29b-41d4-a716-446655440003', 'student1@example.com', 'student'),
-('770e8400-e29b-41d4-a716-446655440004', 'student2@example.com', 'student'),
-('770e8400-e29b-41d4-a716-446655440005', 'student3@example.com', 'student');
+('770e8400-e29b-41d4-a716-446655440000', 'admin@kater.jp', 'password123'),
+('770e8400-e29b-41d4-a716-446655440001', 'instructor1@example.com', 'password123'),
+('770e8400-e29b-41d4-a716-446655440002', 'instructor2@example.com', 'password123'),
+('770e8400-e29b-41d4-a716-446655440003', 'student1@example.com', 'password123'),
+('770e8400-e29b-41d4-a716-446655440004', 'student2@example.com', 'password123'),
+('770e8400-e29b-41d4-a716-446655440005', 'student3@example.com', 'password123');
 
 -- Import profiles
 INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact) VALUES

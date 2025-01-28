@@ -1,7 +1,7 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_KEY, SUPABASE_URL } from "./constants";
 
-export const supabaseBrowserClient = createBrowserClient(
+export const supabaseBrowserClient = createClient(
   SUPABASE_URL,
   SUPABASE_KEY,
   {
