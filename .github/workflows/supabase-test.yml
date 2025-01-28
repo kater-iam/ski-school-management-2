@@ -41,7 +41,8 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          curl -s https://raw.githubusercontent.com/supabase/supabase/master/docker/volumes/api/install.sh | bash
+          curl -fsSL https://cli.supabase.com/install.sh | sh
+          export PATH=/root/.supabase/bin:$PATH
           supabase --version
 
       - name: Install dependencies
