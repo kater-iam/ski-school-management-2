@@ -1,14 +1,77 @@
 -- Start transaction
 BEGIN;
 
+
+INSERT INTO auth.users (
+    instance_id,
+    id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    confirmation_token,
+    confirmation_sent_at,
+    recovery_token,
+    recovery_sent_at,
+    email_change_token_new,
+    email_change,
+    email_change_sent_at,
+    last_sign_in_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at
+) VALUES (
+    '00000000-0000-0000-0000-000000000000',
+    'a96ea053-60dd-4c85-a099-a403b3533f55',
+    'authenticated',
+    'authenticated',
+    'admin@kater.jp',
+    crypt('password123', gen_salt('bf')),
+    current_timestamp,
+    '',
+    current_timestamp,
+    '',
+    current_timestamp,
+    '',
+    '',
+    current_timestamp,
+    current_timestamp,
+    '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb,
+    '{}'::jsonb,
+    current_timestamp,
+    current_timestamp
+);
+
 -- Import test users
-INSERT INTO auth.users (id, email, role) VALUES
-('770e8400-e29b-41d4-a716-446655440000', 'admin@example.com', 'admin'),
-('770e8400-e29b-41d4-a716-446655440001', 'instructor1@example.com', 'instructor'),
-('770e8400-e29b-41d4-a716-446655440002', 'instructor2@example.com', 'instructor'),
-('770e8400-e29b-41d4-a716-446655440003', 'student1@example.com', 'student'),
-('770e8400-e29b-41d4-a716-446655440004', 'student2@example.com', 'student'),
-('770e8400-e29b-41d4-a716-446655440005', 'student3@example.com', 'student');
+INSERT INTO auth.users (
+    instance_id,
+    id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    confirmation_token,
+    confirmation_sent_at,
+    recovery_token,
+    recovery_sent_at,
+    email_change_token_new,
+    email_change,
+    email_change_sent_at,
+    last_sign_in_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at
+) VALUES
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440000', 'authenticated', 'authenticated', 'admin@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'instructor1@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'instructor2@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'student1@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440004', 'authenticated', 'authenticated', 'student2@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440005', 'authenticated', 'authenticated', 'student3@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp);
 
 -- Import profiles
 INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact) VALUES
