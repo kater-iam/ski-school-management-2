@@ -14,21 +14,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -48,12 +33,13 @@ jobs:
         working-directory: ./supabase
         run: npm ci
 
-      - name: Start Supabase
+      - name: Start Supabase and prepare database
         working-directory: ./supabase
         run: |
           supabase init
           supabase start
           supabase db reset
+          sleep 10  # データベースの準備が完了するまで待機
 
       - name: Run tests
         working-directory: ./supabase
