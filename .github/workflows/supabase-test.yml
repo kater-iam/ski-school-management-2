@@ -36,8 +36,19 @@ jobs:
         run: |
           supabase init --force
           supabase start
+          # データベースが起動するまで待機（最大60秒）
+          for i in {1..12}; do
+            if supabase status | grep -q "Database online"; then
+              echo "Database is online"
+              break
+            fi
+            echo "Waiting for database to come online... (attempt $i/12)"
+            sleep 5
+          done
+          # データベースのリセットと初期化
           supabase db reset
-          sleep 10  # データベースの準備が完了するまで待機
+          # マイグレーション完了を待機（追加で30秒）
+          sleep 30
 
       - name: Run tests
         working-directory: ./supabase
