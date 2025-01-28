@@ -1,5 +1,10 @@
-import { LessonsShow } from "@components/lessons";
+import { LessonsShow } from "@/components/lessons/show";
+import { Authenticated } from "@refinedev/core";
 
-export default function LessonsShowPage() {
-    return <LessonsShow />;
-};
+export default function ShowPage() {
+    return (
+        <Authenticated key="lessons-show" fallback={<div>Loading...</div>}>
+            <LessonsShow />
+        </Authenticated>
+    );
+}
