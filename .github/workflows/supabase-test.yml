@@ -17,6 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: supabase/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./supabase
+        run: npm ci
+      
       - uses: supabase/setup-cli@v1
         with:
           version: latest
