@@ -27,119 +27,164 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar"
 
-const data = {
-    header: {
-        title: "Refine Supabase Template",
-        description: "v1.0.0",
-    },
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },    
-    navMain: [
-        {
-            title: "レッスン",
-            url: "/lessons",
-            icon: SquareTerminal,
-            isActive: true,
-            items: [
-                {
-                    title: "リスト",
-                    url: "/lessons/",
-                },
-                {
-                    title: "新規作成",
-                    url: "/lessons/create",
-                },
-            ],
-        },
-        {
-            title: "Models",
-            url: "#",
-            icon: Bot,
-            items: [
-                {
-                    title: "Genesis",
-                    url: "#",
-                },
-                {
-                    title: "Explorer",
-                    url: "#",
-                },
-                {
-                    title: "Quantum",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Documentation",
-            url: "#",
-            icon: BookOpen,
-            items: [
-                {
-                    title: "Introduction",
-                    url: "#",
-                },
-                {
-                    title: "Get Started",
-                    url: "#",
-                },
-                {
-                    title: "Tutorials",
-                    url: "#",
-                },
-                {
-                    title: "Changelog",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "#",
-                },
-                {
-                    title: "Team",
-                    url: "#",
-                },
-                {
-                    title: "Billing",
-                    url: "#",
-                },
-                {
-                    title: "Limits",
-                    url: "#",
-                },
-            ],
-        },
-    ],
-    projects: [
-        {
-            name: "Design Engineering",
-            url: "#",
-            icon: Frame,
-        },
-        {
-            name: "Sales & Marketing",
-            url: "#",
-            icon: PieChart,
-        },
-        {
-            name: "Travel",
-            url: "#",
-            icon: Map,
-        },
-    ],
-}
+import { useResource } from "@refinedev/core";
+import { useEffect } from "react"
+import { useState } from "react"
+
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const data__ = {
+        header: {
+            title: "Refine Supabase Template",
+            description: "v1.0.0",
+        },
+        user: {
+            name: "shadcn",
+            email: "m@example.com",
+            avatar: "/avatars/shadcn.jpg",
+        },    
+        navMain: [
+            {
+                title: "レッスン",
+                url: "/lessons",
+                icon: SquareTerminal,
+                isActive: true,
+                items: [
+                    {
+                        title: "リスト",
+                        url: "/lessons/",
+                    },
+                    {
+                        title: "新規作成",
+                        url: "/lessons/create",
+                    },
+                ],
+            },
+            
+            {
+                title: "Models",
+                url: "#",
+                icon: Bot,
+                items: [
+                    {
+                        title: "Genesis",
+                        url: "#",
+                    },
+                    {
+                        title: "Explorer",
+                        url: "#",
+                    },
+                    {
+                        title: "Quantum",
+                        url: "#",
+                    },
+                ],
+            },
+            {
+                title: "Documentation",
+                url: "#",
+                icon: BookOpen,
+                items: [
+                    {
+                        title: "Introduction",
+                        url: "#",
+                    },
+                    {
+                        title: "Get Started",
+                        url: "#",
+                    },
+                    {
+                        title: "Tutorials",
+                        url: "#",
+                    },
+                    {
+                        title: "Changelog",
+                        url: "#",
+                    },
+                ],
+            },
+            {
+                title: "Settings",
+                url: "#",
+                icon: Settings2,
+                items: [
+                    {
+                        title: "General",
+                        url: "#",
+                    },
+                    {
+                        title: "Team",
+                        url: "#",
+                    },
+                    {
+                        title: "Billing",
+                        url: "#",
+                    },
+                    {
+                        title: "Limits",
+                        url: "#",
+                    },
+                ],
+            },
+        ],
+        projects: [
+            {
+                name: "Design Engineering",
+                url: "#",
+                icon: Frame,
+            },
+            {
+                name: "Sales & Marketing",
+                url: "#",
+                icon: PieChart,
+            },
+            {
+                name: "Travel",
+                url: "#",
+                icon: Map,
+            },
+        ],
+    }
+
+
+
+    const { resources } = useResource();
+
+    const [data, setData] = useState<unknown>();
+
+    useEffect(() => {
+
+        console.log(resources)
+        if ( resources ) {
+            const data = {
+                ...data__,
+                navMain: resources.map(resource => ({
+                    title: resource.name,
+                    url: `/${resource.route}`,
+                    icon: resource.icon || Frame,
+                    items: [
+                        {
+                            title: "一覧",
+                            url: resource.list,
+                        },
+                        {
+                            title: "新規作成",
+                            url: resource.create,
+                        },
+                    ],
+                }))
+            }
+            setData(data);
+        }
+    }, [resources]);
+
+    useEffect(() => {
+        console.log(data)
+    }, [data]);
+    
+
+    if ( !data ) return null;
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
