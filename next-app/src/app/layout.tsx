@@ -39,6 +39,9 @@ export default function RootLayout({
               }}
               resources={[{
                 name: "lessons",
+                meta: {
+                  label: "レッスン",
+                },
                 list: "/lessons",
                 create: "/lessons/create",
                 edit: "/lessons/edit/:id",

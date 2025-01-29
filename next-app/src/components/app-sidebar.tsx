@@ -39,22 +39,18 @@ const data = {
     },    
     navMain: [
         {
-            title: "Playground",
-            url: "#",
+            title: "レッスン",
+            url: "/lessons",
             icon: SquareTerminal,
             isActive: true,
             items: [
                 {
-                    title: "History",
-                    url: "#",
+                    title: "リスト",
+                    url: "/lessons/",
                 },
                 {
-                    title: "Starred",
-                    url: "#",
-                },
-                {
-                    title: "Settings",
-                    url: "#",
+                    title: "新規作成",
+                    url: "/lessons/create",
                 },
             ],
         },
