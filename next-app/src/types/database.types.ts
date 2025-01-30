@@ -241,6 +241,44 @@ export type Database = {
           },
         ]
       }
+      user_levels: {
+        Row: {
+          achieved_date: string
+          created_at: string
+          id: string
+          instructor_comment: string | null
+          level_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved_date: string
+          created_at?: string
+          id?: string
+          instructor_comment?: string | null
+          level_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved_date?: string
+          created_at?: string
+          id?: string
+          instructor_comment?: string | null
+          level_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_levels_level"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
