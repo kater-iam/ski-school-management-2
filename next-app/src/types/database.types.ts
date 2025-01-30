@@ -64,33 +64,6 @@ export type Database = {
         }
         Relationships: []
       }
-      lesson_levels: {
-        Row: {
-          comment_templates: Json | null
-          created_at: string
-          description: string | null
-          id: string
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          comment_templates?: Json | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          comment_templates?: Json | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       lesson_schedules: {
         Row: {
           created_at: string
@@ -141,7 +114,7 @@ export type Database = {
           description: string | null
           duration: number
           id: string
-          level_id: string
+          level: string
           max_participants: number
           name: string
           updated_at: string
@@ -151,7 +124,7 @@ export type Database = {
           description?: string | null
           duration: number
           id?: string
-          level_id: string
+          level: string
           max_participants: number
           name: string
           updated_at?: string
@@ -161,20 +134,12 @@ export type Database = {
           description?: string | null
           duration?: number
           id?: string
-          level_id?: string
+          level?: string
           max_participants?: number
           name?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "fk_lessons_level"
-            columns: ["level_id"]
-            isOneToOne: false
-            referencedRelation: "lesson_levels"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -214,6 +179,7 @@ export type Database = {
           created_at: string
           id: string
           instructor_comment: string | null
+          reservation_number: string
           schedule_id: string
           status: string
           updated_at: string
@@ -223,6 +189,7 @@ export type Database = {
           created_at?: string
           id?: string
           instructor_comment?: string | null
+          reservation_number: string
           schedule_id: string
           status?: string
           updated_at?: string
@@ -232,6 +199,7 @@ export type Database = {
           created_at?: string
           id?: string
           instructor_comment?: string | null
+          reservation_number?: string
           schedule_id?: string
           status?: string
           updated_at?: string
