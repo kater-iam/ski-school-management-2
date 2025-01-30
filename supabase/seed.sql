@@ -22,7 +22,6 @@ INSERT INTO auth.users (
     raw_user_meta_data,
     created_at,
     updated_at,
-    email_change_confirm_status,
     banned_until,
     reauthentication_token,
     reauthentication_sent_at,
@@ -32,10 +31,7 @@ INSERT INTO auth.users (
     phone_change,
     phone_change_token,
     phone_change_sent_at,
-    confirmed_at,
     email_change_token_current,
-    email_change_confirm_status_current,
-    banned_until_current,
     invited_at,
     is_sso_user,
     deleted_at
@@ -59,7 +55,6 @@ INSERT INTO auth.users (
     '{}'::jsonb,
     NOW(),
     NOW(),
-    0,
     NULL,
     '',
     NULL,
@@ -69,10 +64,7 @@ INSERT INTO auth.users (
     '',
     '',
     NULL,
-    NOW(),
     '',
-    0,
-    NULL,
     NULL,
     false,
     NULL
@@ -99,7 +91,6 @@ INSERT INTO auth.users (
     raw_user_meta_data,
     created_at,
     updated_at,
-    email_change_confirm_status,
     banned_until,
     reauthentication_token,
     reauthentication_sent_at,
@@ -109,27 +100,24 @@ INSERT INTO auth.users (
     phone_change,
     phone_change_token,
     phone_change_sent_at,
-    confirmed_at,
     email_change_token_current,
-    email_change_confirm_status_current,
-    banned_until_current,
     invited_at,
     is_sso_user,
     deleted_at
 ) VALUES
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440000', 'authenticated', 'authenticated', 'admin@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'instructor1@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'instructor2@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440021', 'authenticated', 'authenticated', 'instructor3@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440022', 'authenticated', 'authenticated', 'instructor4@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'student1@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440004', 'authenticated', 'authenticated', 'student2@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440005', 'authenticated', 'authenticated', 'student3@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440006', 'authenticated', 'authenticated', 'student4@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440007', 'authenticated', 'authenticated', 'student5@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440008', 'authenticated', 'authenticated', 'student6@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440009', 'authenticated', 'authenticated', 'student7@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL),
-('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440010', 'authenticated', 'authenticated', 'student8@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), 0, NULL, '', NULL, false, NULL, NULL, '', '', NULL, NOW(), '', 0, NULL, NULL, false, NULL);
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440000', 'authenticated', 'authenticated', 'admin@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'instructor1@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'instructor2@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440021', 'authenticated', 'authenticated', 'instructor3@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440022', 'authenticated', 'authenticated', 'instructor4@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'student1@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440004', 'authenticated', 'authenticated', 'student2@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440005', 'authenticated', 'authenticated', 'student3@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440006', 'authenticated', 'authenticated', 'student4@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440007', 'authenticated', 'authenticated', 'student5@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440008', 'authenticated', 'authenticated', 'student6@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440009', 'authenticated', 'authenticated', 'student7@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL),
+('00000000-0000-0000-0000-000000000000', '770e8400-e29b-41d4-a716-446655440010', 'authenticated', 'authenticated', 'student8@example.com', crypt('password123', gen_salt('bf')), NOW(), '', NOW(), '', NOW(), '', '', NOW(), NOW(), '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, NOW(), NOW(), NULL, '', NULL, false, NULL, NULL, '', '', NULL, '', NULL, false, NULL);
 
 -- Import profiles
 INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact) VALUES
@@ -206,6 +194,8 @@ INSERT INTO reservations (id, schedule_id, user_id, reservation_number, status, 
 -- 2月第4週（予約受付中）
 ('aa0e8400-e29b-41d4-a716-446655440015', '990e8400-e29b-41d4-a716-446655440017', '770e8400-e29b-41d4-a716-446655440009', '202402-0015', '申し込み', NULL),
 ('aa0e8400-e29b-41d4-a716-446655440016', '990e8400-e29b-41d4-a716-446655440018', '770e8400-e29b-41d4-a716-446655440010', '202402-0016', '申し込み', NULL);
+
+INSERT INTO lesson_schedules (id, lesson_id, instructor_id, start_time, end_time, status) VALUES
 
 -- 3月第1週
 ('990e8400-e29b-41d4-a716-446655440021', '660e8400-e29b-41d4-a716-446655440000', '770e8400-e29b-41d4-a716-446655440001', '2024-03-01 10:00:00+00', '2024-03-01 12:00:00+00', 'open'),
