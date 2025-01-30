@@ -37,7 +37,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "../supabase/db_test/admin_login.test.ts"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

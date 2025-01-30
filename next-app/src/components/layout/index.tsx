@@ -1,19 +1,17 @@
 "use client";
 
-import { Layout as AntdLayout } from "antd";
-import { Header } from "./header";
-import { Sidebar } from "./sidebar";
+import type { PropsWithChildren } from "react";
+import { Breadcrumb } from "../breadcrumb";
+import { Menu } from "../menu";
 
-export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <AntdLayout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <AntdLayout>
-        <Header />
-        <AntdLayout.Content style={{ padding: "24px" }}>
-          {children}
-        </AntdLayout.Content>
-      </AntdLayout>
-    </AntdLayout>
+    <div className="layout">
+      <Menu />
+      <div className="content">
+        <Breadcrumb />
+        <div>{children}</div>
+      </div>
+    </div>
   );
 };

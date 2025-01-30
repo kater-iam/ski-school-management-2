@@ -2,16 +2,11 @@
 
 import * as React from "react"
 import {
-    AudioWaveform,
-    BookOpen,
-    Bot,
-    Command,
     Frame,
     GalleryVerticalEnd,
     Map,
     PieChart,
-    Settings2,
-    SquareTerminal,
+    List,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -26,15 +21,12 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar"
-
-import { useResource } from "@refinedev/core";
-import { useEffect } from "react"
-import { useState } from "react"
-
-
+import { useResource } from "@refinedev/core"
+import { useState } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const data__ = {
+    const { resources } = useResource();
+    const [data, setData] = useState({
         header: {
             title: "Refine Supabase Template",
             description: "v1.0.0",
@@ -43,91 +35,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             name: "shadcn",
             email: "m@example.com",
             avatar: "/avatars/shadcn.jpg",
-        },    
-        navMain: [
-            {
-                title: "レッスン",
-                url: "/lessons",
-                icon: SquareTerminal,
-                isActive: true,
-                items: [
-                    {
-                        title: "リスト",
-                        url: "/lessons/",
-                    },
-                    {
-                        title: "新規作成",
-                        url: "/lessons/create",
-                    },
-                ],
-            },
-            
-            {
-                title: "Models",
-                url: "#",
-                icon: Bot,
-                items: [
-                    {
-                        title: "Genesis",
-                        url: "#",
-                    },
-                    {
-                        title: "Explorer",
-                        url: "#",
-                    },
-                    {
-                        title: "Quantum",
-                        url: "#",
-                    },
-                ],
-            },
-            {
-                title: "Documentation",
-                url: "#",
-                icon: BookOpen,
-                items: [
-                    {
-                        title: "Introduction",
-                        url: "#",
-                    },
-                    {
-                        title: "Get Started",
-                        url: "#",
-                    },
-                    {
-                        title: "Tutorials",
-                        url: "#",
-                    },
-                    {
-                        title: "Changelog",
-                        url: "#",
-                    },
-                ],
-            },
-            {
-                title: "Settings",
-                url: "#",
-                icon: Settings2,
-                items: [
-                    {
-                        title: "General",
-                        url: "#",
-                    },
-                    {
-                        title: "Team",
-                        url: "#",
-                    },
-                    {
-                        title: "Billing",
-                        url: "#",
-                    },
-                    {
-                        title: "Limits",
-                        url: "#",
-                    },
-                ],
-            },
-        ],
+        },
+        navMain: resources?.map((resource) => ({
+            title: resource.meta?.label || resource.name,
+            url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
+            icon: List,
+            items: [
+                {
+                    title: "一覧",
+                    url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
+                },
+                ...(resource.canCreate ? [{
+                    title: "新規作成",
+                    url: typeof resource.create === 'string' ? resource.create : `/${resource.name}/create`,
+                }] : []),
+            ],
+        })) || [],
         projects: [
             {
                 name: "Design Engineering",
@@ -145,46 +68,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: Map,
             },
         ],
-    }
+    });
 
 
-
-    const { resources } = useResource();
-
-    const [data, setData] = useState<unknown>();
-
-    useEffect(() => {
-
-        console.log(resources)
-        if ( resources ) {
-            const data = {
-                ...data__,
-                navMain: resources.map(resource => ({
-                    title: resource.name,
-                    url: `/${resource.route}`,
-                    icon: resource.icon || Frame,
-                    items: [
-                        {
-                            title: "一覧",
-                            url: resource.list,
-                        },
-                        {
-                            title: "新規作成",
-                            url: resource.create,
-                        },
-                    ],
-                }))
-            }
-            setData(data);
-        }
-    }, [resources]);
-
-    useEffect(() => {
-        console.log(data)
-    }, [data]);
-    
-
-    if ( !data ) return null;
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>

@@ -1,6 +1,7 @@
 import { SidebarTrigger } from "@components/ui/sidebar"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@components/ui/breadcrumb"
 import { Separator } from "@radix-ui/react-separator"
+import React from "react"
 
 export interface AuthHeaderProps {
     title: string
@@ -20,8 +21,8 @@ export const AuthHeader = ({ data }: Props) => {
                 <Breadcrumb>
                     <BreadcrumbList>
                         {data.map((item, index) => (
-                            <>
-                                <BreadcrumbItem className="hidden md:block" key={index}>
+                            <React.Fragment key={`breadcrumb-${index}`}>
+                                <BreadcrumbItem className="hidden md:block">
                                     <BreadcrumbLink href={item.path}>
                                         {item.title}
                                     </BreadcrumbLink>
@@ -29,7 +30,7 @@ export const AuthHeader = ({ data }: Props) => {
                                 {index < data.length - 1 && (
                                     <BreadcrumbSeparator className="hidden md:block" />
                                 )}
-                            </>
+                            </React.Fragment>
                         ))}
                     </BreadcrumbList>
                 </Breadcrumb>
