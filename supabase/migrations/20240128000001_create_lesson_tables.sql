@@ -3,7 +3,6 @@ CREATE TABLE lessons (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    level VARCHAR(20) NOT NULL,
     duration INTEGER NOT NULL,
     max_participants INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
@@ -14,7 +13,6 @@ CREATE TABLE lessons (
 COMMENT ON COLUMN lessons.id IS 'レッスンID';
 COMMENT ON COLUMN lessons.name IS 'レッスン名';
 COMMENT ON COLUMN lessons.description IS 'レッスン説明';
-COMMENT ON COLUMN lessons.level IS 'レベル（初級/中級/上級）';
 COMMENT ON COLUMN lessons.duration IS '所要時間（分）';
 COMMENT ON COLUMN lessons.max_participants IS '最大参加人数';
 COMMENT ON COLUMN lessons.created_at IS '作成日時';

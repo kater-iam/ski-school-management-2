@@ -114,7 +114,6 @@ export type Database = {
           description: string | null
           duration: number
           id: string
-          level: string
           max_participants: number
           name: string
           updated_at: string
@@ -124,7 +123,6 @@ export type Database = {
           description?: string | null
           duration: number
           id?: string
-          level: string
           max_participants: number
           name: string
           updated_at?: string
@@ -134,7 +132,6 @@ export type Database = {
           description?: string | null
           duration?: number
           id?: string
-          level?: string
           max_participants?: number
           name?: string
           updated_at?: string
