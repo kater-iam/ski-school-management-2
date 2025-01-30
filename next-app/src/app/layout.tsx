@@ -46,6 +46,54 @@ export default function RootLayout({
                 create: "/lessons/create",
                 edit: "/lessons/edit/:id",
                 show: "/lessons/show/:id"
+              }, {
+                name: "reservations",
+                list: "/reservations",
+                create: "/reservations/create",
+                edit: "/reservations/edit/:id",
+                show: "/reservations/show/:id"
+              }, {
+                name: "profiles",
+                list: "/profiles",
+                create: "/profiles/create",
+                edit: "/profiles/edit/:id",
+                show: "/profiles/show/:id"
+              }, {
+                name: "user-levels",
+                list: "/user-levels",
+                create: "/user-levels/create",
+                edit: "/user-levels/edit/:id",
+                show: "/user-levels/show/:id"
+              }, {
+                name: "lesson-levels",
+                list: "/lesson-levels",
+                create: "/lesson-levels/create",
+                edit: "/lesson-levels/edit/:id",
+                show: "/lesson-levels/show/:id"
+              }, {
+                name: "profiles",
+                list: "/profiles",
+                create: "/profiles/create",
+                edit: "/profiles/edit/:id",
+                show: "/profiles/show/:id"
+              }, {
+                name: "lesson_levels",
+                list: "/lesson_levels",
+                create: "/lesson_levels/create",
+                edit: "/lesson_levels/edit/:id",
+                show: "/lesson_levels/show/:id"
+              }, {
+                name: "lesson_schedules",
+                list: "/lesson_schedules",
+                create: "/lesson_schedules/create",
+                edit: "/lesson_schedules/edit/:id",
+                show: "/lesson_schedules/show/:id"
+              }, {
+                name: "user_levels",
+                list: "/user_levels",
+                create: "/user_levels/create",
+                edit: "/user_levels/edit/:id",
+                show: "/user_levels/show/:id"
               }]}>
               {children}
               <RefineKbar />

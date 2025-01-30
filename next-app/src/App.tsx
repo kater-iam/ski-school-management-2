@@ -29,7 +29,7 @@ import { UserLevelShow } from "./pages/user-levels/show";
 
 function App() {
   return (
-    <BrowserRouter>
+    (<BrowserRouter>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <Refine
@@ -38,66 +38,58 @@ function App() {
             authProvider={authProvider}
             resources={[
               {
-                name: "lesson_levels",
-                list: "/lesson-levels",
-                create: "/lesson-levels/create",
-                edit: "/lesson-levels/edit/:id",
-                show: "/lesson-levels/show/:id",
-                meta: {
-                  canDelete: true,
-                },
+              name: "lesson_levels",
+              list: "/lesson-levels",
+              create: "/lesson-levels/create",
+              edit: "/lesson-levels/edit/:id",
+              show: "/lesson-levels/show/:id",
+              meta: {
+                canDelete: true,
               },
-              {
-                name: "lessons",
-                list: "/lessons",
-                create: "/lessons/create",
-                edit: "/lessons/edit/:id",
-                show: "/lessons/show/:id",
-                meta: {
-                  canDelete: true,
-                },
+            },  {
+              name: "lesson_schedules",
+              list: "/lesson-schedules",
+              create: "/lesson-schedules/create",
+              edit: "/lesson-schedules/edit/:id",
+              show: "/lesson-schedules/show/:id",
+              meta: {
+                canDelete: true,
               },
-              {
-                name: "lesson_schedules",
-                list: "/lesson-schedules",
-                create: "/lesson-schedules/create",
-                edit: "/lesson-schedules/edit/:id",
-                show: "/lesson-schedules/show/:id",
-                meta: {
-                  canDelete: true,
-                },
+            },
+            {
+              name: "lessons",
+              list: "/lessons",
+              create: "/lessons/create",
+              edit: "/lessons/edit/:id",
+              show: "/lessons/show/:id",
+              meta: {
+                canDelete: true,
               },
-              {
-                name: "reservations",
-                list: "/reservations",
-                create: "/reservations/create",
-                edit: "/reservations/edit/:id",
-                show: "/reservations/show/:id",
-                meta: {
-                  canDelete: true,
-                },
+            },{
+              name: "profiles",
+              list: "/profiles",
+              create: "/profiles/create",
+              edit: "/profiles/edit/:id",
+              show: "/profiles/show/:id",
+              meta: {
+                canDelete: true,
               },
-              {
-                name: "profiles",
-                list: "/profiles",
-                create: "/profiles/create",
-                edit: "/profiles/edit/:id",
-                show: "/profiles/show/:id",
-                meta: {
-                  canDelete: true,
-                },
+            }, {
+              name: "reservations",
+              list: "/reservations",
+              create: "/reservations/create",
+              edit: "/reservations/edit/:id",
+              show: "/reservations/show/:id",
+              meta: {
+                canDelete: true,
               },
-              {
-                name: "user_levels",
-                list: "/user-levels",
-                create: "/user-levels/create",
-                edit: "/user-levels/edit/:id",
-                show: "/user-levels/show/:id",
-                meta: {
-                  canDelete: true,
-                },
-              },
-            ]}
+            },{
+              name: "user_levels",
+              list: "/user_levels",
+              create: "/user_levels/create",
+              edit: "/user_levels/edit/:id",
+              show: "/user_levels/show/:id"
+            }]}
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
@@ -144,7 +136,7 @@ function App() {
           <RefineKbar />
         </ColorModeContextProvider>
       </RefineKbarProvider>
-    </BrowserRouter>
+    </BrowserRouter>)
   );
 }
 
