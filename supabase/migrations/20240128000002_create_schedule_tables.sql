@@ -46,6 +46,7 @@ CREATE TABLE reservations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     schedule_id UUID NOT NULL,
     user_id UUID NOT NULL,
+    reservation_number VARCHAR(20) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT '申し込み',
     instructor_comment TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
@@ -59,6 +60,7 @@ CREATE TABLE reservations (
 COMMENT ON COLUMN reservations.id IS '予約ID';
 COMMENT ON COLUMN reservations.schedule_id IS 'スケジュールID (FK)';
 COMMENT ON COLUMN reservations.user_id IS 'ユーザーID (FK)';
+COMMENT ON COLUMN reservations.reservation_number IS '予約番号（YYYYMM-NNNN形式）';
 COMMENT ON COLUMN reservations.status IS '状態（申し込み/申し込み承認/受講済/キャンセル）';
 COMMENT ON COLUMN reservations.instructor_comment IS 'インストラクターからのアドバイス';
 COMMENT ON COLUMN reservations.created_at IS '作成日時';
@@ -80,6 +82,9 @@ CREATE POLICY "Authenticated users can create reservations" ON reservations
 
 CREATE POLICY "Users can update their own reservations" ON reservations
     FOR UPDATE USING (auth.uid() = user_id);
+
+-- Create unique index for reservation_number
+CREATE UNIQUE INDEX idx_reservations_number ON reservations(reservation_number);
 
 -- Create instructor_schedules table
 CREATE TABLE instructor_schedules (
