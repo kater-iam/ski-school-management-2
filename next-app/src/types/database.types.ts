@@ -66,6 +66,7 @@ export type Database = {
       }
       lesson_levels: {
         Row: {
+          comment_templates: Json | null
           created_at: string
           description: string | null
           id: string
@@ -73,6 +74,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          comment_templates?: Json | null
           created_at?: string
           description?: string | null
           id?: string
@@ -80,6 +82,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          comment_templates?: Json | null
           created_at?: string
           description?: string | null
           id?: string
@@ -210,6 +213,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          instructor_comment: string | null
           schedule_id: string
           status: string
           updated_at: string
@@ -218,6 +222,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          instructor_comment?: string | null
           schedule_id: string
           status?: string
           updated_at?: string
@@ -226,6 +231,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          instructor_comment?: string | null
           schedule_id?: string
           status?: string
           updated_at?: string
@@ -237,44 +243,6 @@ export type Database = {
             columns: ["schedule_id"]
             isOneToOne: false
             referencedRelation: "lesson_schedules"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_levels: {
-        Row: {
-          achieved_date: string
-          created_at: string
-          id: string
-          instructor_comment: string | null
-          level_id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          achieved_date: string
-          created_at?: string
-          id?: string
-          instructor_comment?: string | null
-          level_id: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          achieved_date?: string
-          created_at?: string
-          id?: string
-          instructor_comment?: string | null
-          level_id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_user_levels_level"
-            columns: ["level_id"]
-            isOneToOne: false
-            referencedRelation: "lesson_levels"
             referencedColumns: ["id"]
           },
         ]

@@ -15,6 +15,17 @@ CREATE TABLE lesson_schedules (
     CONSTRAINT check_time CHECK (end_time > start_time)
 );
 
+-- Add column comments for lesson_schedules
+COMMENT ON COLUMN lesson_schedules.id IS 'スケジュールID';
+COMMENT ON COLUMN lesson_schedules.lesson_id IS 'レッスンID (FK)';
+COMMENT ON COLUMN lesson_schedules.instructor_id IS 'インストラクターID (FK)';
+COMMENT ON COLUMN lesson_schedules.start_time IS '開始日時';
+COMMENT ON COLUMN lesson_schedules.end_time IS '終了日時';
+COMMENT ON COLUMN lesson_schedules.status IS '状態（open/closed/cancelled）';
+COMMENT ON COLUMN lesson_schedules.current_participants IS '現在の参加者数';
+COMMENT ON COLUMN lesson_schedules.created_at IS '作成日時';
+COMMENT ON COLUMN lesson_schedules.updated_at IS '更新日時';
+
 -- Enable RLS on lesson_schedules
 ALTER TABLE lesson_schedules ENABLE ROW LEVEL SECURITY;
 
@@ -35,13 +46,23 @@ CREATE TABLE reservations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     schedule_id UUID NOT NULL,
     user_id UUID NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'confirmed',
+    status VARCHAR(20) NOT NULL DEFAULT '申し込み',
+    instructor_comment TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     CONSTRAINT fk_reservations_schedule FOREIGN KEY (schedule_id) REFERENCES lesson_schedules(id) ON DELETE CASCADE,
     CONSTRAINT fk_reservations_user FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
-    CONSTRAINT check_status CHECK (status IN ('confirmed', 'cancelled'))
+    CONSTRAINT check_status CHECK (status IN ('申し込み', '申し込み承認', '受講済', 'キャンセル'))
 );
+
+-- Add column comments for reservations
+COMMENT ON COLUMN reservations.id IS '予約ID';
+COMMENT ON COLUMN reservations.schedule_id IS 'スケジュールID (FK)';
+COMMENT ON COLUMN reservations.user_id IS 'ユーザーID (FK)';
+COMMENT ON COLUMN reservations.status IS '状態（申し込み/申し込み承認/受講済/キャンセル）';
+COMMENT ON COLUMN reservations.instructor_comment IS 'インストラクターからのアドバイス';
+COMMENT ON COLUMN reservations.created_at IS '作成日時';
+COMMENT ON COLUMN reservations.updated_at IS '更新日時';
 
 -- Enable RLS on reservations
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
@@ -72,6 +93,15 @@ CREATE TABLE instructor_schedules (
     CONSTRAINT fk_instructor_schedules_user FOREIGN KEY (instructor_id) REFERENCES auth.users(id) ON DELETE CASCADE,
     CONSTRAINT check_time CHECK (end_time > start_time)
 );
+
+-- Add column comments for instructor_schedules
+COMMENT ON COLUMN instructor_schedules.id IS 'スケジュールID';
+COMMENT ON COLUMN instructor_schedules.instructor_id IS 'インストラクターID (FK)';
+COMMENT ON COLUMN instructor_schedules.date IS '勤務可能日';
+COMMENT ON COLUMN instructor_schedules.start_time IS '開始時間';
+COMMENT ON COLUMN instructor_schedules.end_time IS '終了時間';
+COMMENT ON COLUMN instructor_schedules.created_at IS '作成日時';
+COMMENT ON COLUMN instructor_schedules.updated_at IS '更新日時';
 
 -- Enable RLS on instructor_schedules
 ALTER TABLE instructor_schedules ENABLE ROW LEVEL SECURITY;
