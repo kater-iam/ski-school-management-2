@@ -197,6 +197,7 @@ export type Database = {
           lesson_schedule_id: string
           reservation_number: string
           status: Database["public"]["Enums"]["reservation_status"]
+          student_id: string
           updated_at: string
           user_id: string
         }
@@ -207,6 +208,7 @@ export type Database = {
           lesson_schedule_id: string
           reservation_number: string
           status?: Database["public"]["Enums"]["reservation_status"]
+          student_id: string
           updated_at?: string
           user_id: string
         }
@@ -217,6 +219,7 @@ export type Database = {
           lesson_schedule_id?: string
           reservation_number?: string
           status?: Database["public"]["Enums"]["reservation_status"]
+          student_id?: string
           updated_at?: string
           user_id?: string
         }
@@ -228,6 +231,13 @@ export type Database = {
             referencedRelation: "lesson_schedules"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reservations_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -235,7 +245,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       lesson_schedule_status: "open" | "closed"
