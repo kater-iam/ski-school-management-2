@@ -24,21 +24,30 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 -- Create profiles indexes
 CREATE INDEX idx_profiles_user_id ON profiles(user_id);
 
+-- Create function to check if user is admin
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN
+SECURITY DEFINER
+SET search_path = public
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM profiles
+        WHERE user_id = auth.uid()
+        AND role = 'admin'::profile_role
+    );
+END;
+$$;
+
 -- Create RLS policies for profiles
-CREATE POLICY "Allow users to view their own profile" ON profiles
-    FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Allow users to update their own profile"
-    ON profiles FOR UPDATE
-    USING (auth.uid() = user_id);
-
-CREATE POLICY "Allow users to delete their own profile"
-    ON profiles FOR DELETE
-    USING (auth.uid() = user_id);
-
-CREATE POLICY "Allow users to insert their own profile"
-    ON profiles FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Profiles access policy" ON profiles
+    FOR ALL USING (
+        -- 自分自身のプロファイル、または管理者の場合はアクセス可能
+        auth.uid() = user_id 
+        OR 
+        is_admin()
+    );
 
 -- Create updated_at trigger for profiles
 CREATE TRIGGER update_profiles_updated_at
