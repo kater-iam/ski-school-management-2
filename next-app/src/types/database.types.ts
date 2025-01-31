@@ -62,45 +62,57 @@ export type Database = {
           start_time?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "instructor_schedules_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lesson_schedules: {
         Row: {
           created_at: string
-          current_participants: number
           end_time: string
           id: string
           instructor_id: string
           lesson_id: string
           start_time: string
-          status: string
+          status: Database["public"]["Enums"]["lesson_schedule_status"]
           updated_at: string
         }
         Insert: {
           created_at?: string
-          current_participants?: number
           end_time: string
           id?: string
           instructor_id: string
           lesson_id: string
           start_time: string
-          status?: string
+          status?: Database["public"]["Enums"]["lesson_schedule_status"]
           updated_at?: string
         }
         Update: {
           created_at?: string
-          current_participants?: number
           end_time?: string
           id?: string
           instructor_id?: string
           lesson_id?: string
           start_time?: string
-          status?: string
+          status?: Database["public"]["Enums"]["lesson_schedule_status"]
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "fk_schedules_lesson"
+            foreignKeyName: "lesson_schedules_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_schedules_lesson_id_fkey"
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
@@ -111,29 +123,32 @@ export type Database = {
       lessons: {
         Row: {
           created_at: string
-          description: string | null
+          description: string
           duration: number
           id: string
           max_participants: number
           name: string
+          price: number
           updated_at: string
         }
         Insert: {
           created_at?: string
-          description?: string | null
+          description: string
           duration: number
           id?: string
-          max_participants: number
+          max_participants?: number
           name: string
+          price: number
           updated_at?: string
         }
         Update: {
           created_at?: string
-          description?: string | null
+          description?: string
           duration?: number
           id?: string
           max_participants?: number
           name?: string
+          price?: number
           updated_at?: string
         }
         Relationships: []
@@ -146,6 +161,7 @@ export type Database = {
           id: string
           last_name: string
           phone: string | null
+          role: Database["public"]["Enums"]["profile_role"]
           updated_at: string
           user_id: string
         }
@@ -156,6 +172,7 @@ export type Database = {
           id?: string
           last_name: string
           phone?: string | null
+          role: Database["public"]["Enums"]["profile_role"]
           updated_at?: string
           user_id: string
         }
@@ -166,6 +183,7 @@ export type Database = {
           id?: string
           last_name?: string
           phone?: string | null
+          role?: Database["public"]["Enums"]["profile_role"]
           updated_at?: string
           user_id?: string
         }
@@ -176,9 +194,9 @@ export type Database = {
           created_at: string
           id: string
           instructor_comment: string | null
+          lesson_schedule_id: string
           reservation_number: string
-          schedule_id: string
-          status: string
+          status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
         }
@@ -186,9 +204,9 @@ export type Database = {
           created_at?: string
           id?: string
           instructor_comment?: string | null
+          lesson_schedule_id: string
           reservation_number: string
-          schedule_id: string
-          status?: string
+          status?: Database["public"]["Enums"]["reservation_status"]
           updated_at?: string
           user_id: string
         }
@@ -196,16 +214,16 @@ export type Database = {
           created_at?: string
           id?: string
           instructor_comment?: string | null
+          lesson_schedule_id?: string
           reservation_number?: string
-          schedule_id?: string
-          status?: string
+          status?: Database["public"]["Enums"]["reservation_status"]
           updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "fk_reservations_schedule"
-            columns: ["schedule_id"]
+            foreignKeyName: "reservations_lesson_schedule_id_fkey"
+            columns: ["lesson_schedule_id"]
             isOneToOne: false
             referencedRelation: "lesson_schedules"
             referencedColumns: ["id"]
@@ -220,7 +238,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      lesson_schedule_status: "open" | "closed"
+      profile_role: "admin" | "instructor" | "student"
+      reservation_status: "申し込み" | "申し込み承認" | "受講済" | "キャンセル"
     }
     CompositeTypes: {
       [_ in never]: never
