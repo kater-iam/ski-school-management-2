@@ -464,3 +464,31 @@ cd next-app && npx shadcn@latest add ${component-name}
      DROP TABLE profiles;
      ```
 
+## タイムゾーンのルール
+
+1. 基本設定
+   - すべてのタイムゾーンはJST（日本標準時）を使用する
+   - データベースのタイムスタンプはJSTで保存・取得する
+
+2. マイグレーションファイルでの設定
+   - タイムスタンプのデフォルト値は以下のように設定する：
+     ```sql
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL
+     ```
+
+3. アプリケーションでの表示
+   - フロントエンドでの日時表示は必ずJSTで行う
+   - 日付フォーマット：YYYY年MM月DD日
+   - 時間フォーマット：HH時MM分
+
+4. データ操作時の注意点
+   - データベースへの挿入時は必ずJSTで行う
+   - タイムゾーンの変換が必要な場合は、明示的に`Asia/Tokyo`を指定する
+   - 例：
+     ```sql
+     INSERT INTO lesson_schedules (start_time, end_time)
+     VALUES 
+     ('2024-02-01 10:00:00+09'::timestamptz, '2024-02-01 12:00:00+09'::timestamptz);
+     ```
+
