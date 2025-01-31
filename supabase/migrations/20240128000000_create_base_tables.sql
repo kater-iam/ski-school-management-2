@@ -27,11 +27,17 @@ CREATE INDEX idx_profiles_user_id ON profiles(user_id);
 CREATE POLICY "Users can view their own profile" ON profiles
     FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can update their own profile" ON profiles
-    FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Allow users to update their own profile"
+    ON profiles FOR UPDATE
+    USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can insert their own profile" ON profiles
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Allow users to delete their own profile"
+    ON profiles FOR DELETE
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Allow users to insert their own profile"
+    ON profiles FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
