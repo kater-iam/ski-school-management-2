@@ -65,16 +65,17 @@ export default function RootLayout({
                 //     label: "レッスン予定"
                 //   },
                 // },
-                // {
-                //   name: "reservations",
-                //   list: "/reservations",
-                //   create: "/reservations/create",
-                //   edit: "/reservations/edit/:id",
-                //   show: "/reservations/show/:id",
-                //   meta: {
-                //     canDelete: true,
-                //   },
-                // },
+                 {
+                  name: "reservations",
+                  list: "/reservations",
+                  create: "/reservations/create",
+                  edit: "/reservations/edit/:id",
+                  show: "/reservations/show/:id",
+                  meta: {
+                    canDelete: true,
+                    label: "予約"
+                  },
+                },
                 // {
                 //   name: "profiles",
                 //   list: "/profiles",
