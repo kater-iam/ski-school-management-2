@@ -4,6 +4,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Create users table extensions and triggers
 ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;
 
+-- Create profile role enum
+CREATE TYPE profile_role AS ENUM ('admin', 'instructor', 'student');
+
 -- Create profiles table
 CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -12,10 +15,14 @@ CREATE TABLE profiles (
     last_name VARCHAR(50) NOT NULL,
     phone VARCHAR(20),
     emergency_contact VARCHAR(20),
+    role profile_role NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     CONSTRAINT fk_profiles_user FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
+
+-- Add comment to role column
+COMMENT ON COLUMN profiles.role IS 'ユーザーの役割（管理者、インストラクター、生徒）';
 
 -- Enable RLS on profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -24,7 +31,7 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 CREATE INDEX idx_profiles_user_id ON profiles(user_id);
 
 -- Create RLS policies for profiles
-CREATE POLICY "Users can view their own profile" ON profiles
+CREATE POLICY "Allow users to view their own profile" ON profiles
     FOR SELECT USING (auth.uid() = user_id);
 
 CREATE POLICY "Allow users to update their own profile"
