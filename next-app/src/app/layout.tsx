@@ -10,8 +10,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { i18nProvider } from "@providers/i18n-provider";
 
 export const metadata: Metadata = {
-  title: "スキーレッスン予約管理",
-  description: "スキーレッスン予約管理",
+  title: "Katerシステム",  
   icons: {
     icon: "/favicon.ico",
   },

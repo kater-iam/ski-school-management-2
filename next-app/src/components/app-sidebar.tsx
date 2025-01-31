@@ -2,10 +2,7 @@
 
 import * as React from "react"
 import {
-    Frame,
     GalleryVerticalEnd,
-    Map,
-    PieChart,
     List,
 } from "lucide-react"
 
@@ -21,22 +18,28 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar"
-import { useRefineContext, useResource, useTranslate } from "@refinedev/core"
-import { useState } from "react";
+import { useGetIdentity, useRefineContext, useResource, useTranslate } from "@refinedev/core"
+import { useEffect, useState } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { resources } = useResource();
     const refineContext = useRefineContext()
     const translate = useTranslate()
+    const { data: user } = useGetIdentity<{
+        id: string;
+        email: string;
+    }>();
+
+
     const [data, setData] = useState({
         header: {
             title: refineContext.options.title.text as string,
             description: "v1.0.0",
         },
         user: {
-            name: "shadcn",
-            email: "m@example.com",
-            avatar: "/avatars/shadcn.jpg",
+            name: '',
+            email: '',
+            avatar: "",
         },
         navMain: resources?.map((resource) => ({
             title: translate(`resources.${resource.name}.name`),
@@ -53,24 +56,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 }] : []),
             ],
         })) || [],
-        projects: [
-            {
-                name: "Design Engineering",
-                url: "#",
-                icon: Frame,
-            },
-            {
-                name: "Sales & Marketing",
-                url: "#",
-                icon: PieChart,
-            },
-            {
-                name: "Travel",
-                url: "#",
-                icon: Map,
-            },
-        ],
     });
+
+    useEffect(() => {
+        if (!user) return
+        setData({
+            ...data,
+            user: {
+                name: user!.email.split('@')[0],
+                email: user!.email,
+                avatar: "",
+            },
+        })
+    }, [user])
 
 
     return (
