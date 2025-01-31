@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDateToJapanese, isDateField, getRelationName, pluralize } from "@/lib/utils";
-import { HttpError } from "@refinedev/core";
+import { HttpError, useResource, useTranslate } from "@refinedev/core";
 
 type RelationOption = {
     label: string;
@@ -18,8 +18,7 @@ type RelationOption = {
 interface EditProps {
     data: Record<string, any>;
     isLoading: boolean;
-    error?: Error | HttpError | null;
-    resourceLabel?: string;
+    error?: Error | HttpError | null;    
     onCancel: () => void;
     onSubmit: (values: any) => void;
     isUpdating: boolean;
@@ -35,11 +34,26 @@ interface EditProps {
     };
 }
 
+// フィールド名を翻訳する関数
+const getFieldLabel = (key: string, translate: (key: string) => string, resourceName?: string) => {
+    const translationKey = `resources.${resourceName}.fields.${key}`;
+    const translated = translate(translationKey);
+    
+    // 翻訳が見つからない場合はデフォルトの表示を使用
+    if (translationKey === translated) {
+        return key
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+    
+    return translated;
+};
+
 export const Edit: React.FC<EditProps> = ({
     data,
     isLoading,
     error,
-    resourceLabel = "",
     onCancel,
     onSubmit,
     isUpdating,
@@ -49,6 +63,9 @@ export const Edit: React.FC<EditProps> = ({
     setValue,
     relationFields = {},
 }) => {
+    const { resource } = useResource();
+    const translate = useTranslate();
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div style={{ color: "red" }}>{error.message}</div>;
     if (!data) return <div>No data</div>;
@@ -69,9 +86,11 @@ export const Edit: React.FC<EditProps> = ({
             <div className="pb-4">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-2xl font-bold">{resourceLabel}編集</h2>
+                        <h2 className="text-2xl font-bold">
+                            {translate(`resources.${resource?.name}.titles.edit`)}
+                        </h2>
                         <p className="text-sm text-muted-foreground">
-                            {resourceLabel}の情報を編集できます。
+                            {resource?.name}の情報を編集できます。
                         </p>
                     </div>
                     <div className="flex gap-2">
@@ -96,14 +115,15 @@ export const Edit: React.FC<EditProps> = ({
             </div>
             <form id="edit-form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="space-y-6">
-                    {/* Normal Fields */}
                     {fields.map(([key, value]) => {
                         const isIdField = key.endsWith('_id');
                         if (isIdField && isEditableField(key)) {
                             const relationData = relationFields[key];
                             return (
                                 <div key={key} className="space-y-2">
-                                    <div className="text-sm font-medium">{pluralize(key.replace('_id', ''))}</div>
+                                    <div className="text-sm font-medium">
+                                        {getFieldLabel(key.replace('_id', ''), translate, resource?.name)}
+                                    </div>
                                     {relationData?.isLoading ? (
                                         <div>リレーション候補を取得中...</div>
                                     ) : (
@@ -135,7 +155,9 @@ export const Edit: React.FC<EditProps> = ({
 
                         return (
                             <div key={key} className="space-y-2">
-                                <div className="text-sm font-medium">{key}</div>
+                                <div className="text-sm font-medium">
+                                    {getFieldLabel(key, translate, resource?.name)}
+                                </div>
                                 {isEditableField(key) ? (
                                     <>
                                         {typeof value === 'string' && value.length > 100 ? (

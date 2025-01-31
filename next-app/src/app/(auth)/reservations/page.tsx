@@ -4,12 +4,12 @@ import React from "react";
 import { useResourceWithRelations } from "@/components/hooks/use-resource-with-relations";
 import { AuthHeader, AuthHeaderProps } from "../_components/auth-header";
 import { List } from "@/components/list";
-import { HttpError, useResource, useTitle, useTranslate } from "@refinedev/core";
+import { HttpError, useResource, useTitle } from "@refinedev/core";
 
 export default function Page() {
     const { resource } = useResource();
     const { data, isLoading, error } = useResourceWithRelations();
-    
+        
     // データの準備
     const items = React.useMemo(() => {
         if (!data?.data) return [];
@@ -18,10 +18,11 @@ export default function Page() {
 
     const breadcrumbData: AuthHeaderProps[] = [
         { title: "Refine Supabase Template", path: "/" },
-        { title: `一覧`, path: null },
+        { title: `${resource?.meta?.label}一覧`, path: `/${resource?.name}` },
     ]
-
     
+    
+
     return (
         <>
             <AuthHeader data={breadcrumbData} />

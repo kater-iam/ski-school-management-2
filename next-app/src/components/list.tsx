@@ -32,7 +32,7 @@ import {
     getPaginationRowModel,
     flexRender,
 } from "@tanstack/react-table";
-import { useDelete, useResource, useNavigation, HttpError } from "@refinedev/core";
+import { useDelete, useResource, useNavigation, HttpError, useTranslate } from "@refinedev/core";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -58,16 +58,24 @@ const getAllKeys = (obj: any, prefix = ''): string[] => {
 };
 
 // キーをキャメルケースから人間が読みやすい形式に変換
-const formatColumnName = (key: string) => {
-    return key
-        .split('.')
-        .map(part =>
-            part
-                .replace(/_/g, ' ')
-                .replace(/([A-Z])/g, ' $1')
-                .replace(/^./, str => str.toUpperCase())
-        )
-        .join(' - ');
+const formatColumnName = (key: string, translate: (key: string) => string, resourceName?: string) => {    
+    const translationKey = `resources.${resourceName}.fields.${key}`;
+    const translated = translate(translationKey);
+    
+    // 翻訳が見つからない場合はデフォルトのフォーマットを使用
+    if (translationKey === translated) {
+        return key
+            .split('.')
+            .map(part =>
+                part
+                    .replace(/_/g, ' ')
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, str => str.toUpperCase())
+            )
+            .join(' - ');
+    }
+    
+    return translated;
 };
 
 // ネストされたオブジェクトから値を取得
@@ -115,7 +123,7 @@ const ActionCell = ({ row, router, resource, handleDelete }: {
 }) => {
     const dialogRef = React.useRef<HTMLDialogElement>(null);
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-    
+
     const handleDeleteClick = () => {
         if (dialogRef.current) {
             dialogRef.current.showModal();
@@ -135,7 +143,7 @@ const ActionCell = ({ row, router, resource, handleDelete }: {
             dialogRef.current.close();
         }
     };
-    
+
     return (
         <>
             <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -220,7 +228,8 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
     const { mutate } = useDelete();
     const { resource } = useResource();
     const { create } = useNavigation();
-
+    const translate = useTranslate();
+    
     const handleDelete = (id: number) => {
         mutate(
             {
@@ -246,7 +255,7 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
             ...keys.map(key => ({
                 id: key,
                 accessorFn: (row: any) => getNestedValue(row, key),
-                header: formatColumnName(key),
+                header: formatColumnName(key, translate, resource?.name),
                 cell: ({ getValue }: any) => formatCellValue(getValue()),
             })),
             {
@@ -262,7 +271,7 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
                 ),
             },
         ];
-    }, [items, router, resource, handleDelete]);
+    }, [items, router, resource, handleDelete, translate]);
 
     // テーブルインスタンスを作成
     const table = useReactTable({
@@ -275,7 +284,7 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
             columnVisibility,
         },
     });
-
+    
     // ページネーションアイテムを生成
     const generatePaginationItems = () => {
         const currentPage = table.getState().pagination.pageIndex + 1;

@@ -55,7 +55,7 @@ export default function TomatosEditPage() {
 
                 // リレーションデータを除外
                 if (typeof value === 'object' && value !== null) return false;
-
+                
                 // 複数形で終わるフィールドを除外（リレーションのリスト）
                 if (key.endsWith('s') && Array.isArray(value)) return false;
 
@@ -83,7 +83,7 @@ export default function TomatosEditPage() {
 
     const breadcrumbData: AuthHeaderProps[] = [
         { title: "Refine Supabase Template", path: "/" },
-        { title: `編集`, path: null },
+        { title: `${resource?.label}編集`, path: `/${resource?.name}/edit` },
     ];
 
     const relationFields = {
@@ -103,6 +103,7 @@ export default function TomatosEditPage() {
                 data={data?.data}
                 isLoading={isLoading || formLoading}
                 error={isError ? new Error("データの取得に失敗しました") : undefined}
+                resourceLabel={resource?.label}
                 onCancel={() => list(resource?.name ?? "")}
                 onSubmit={onSubmit}
                 isUpdating={isUpdating}

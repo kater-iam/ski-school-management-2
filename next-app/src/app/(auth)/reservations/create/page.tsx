@@ -63,7 +63,7 @@ export default function TomatosCreatePage() {
 
     const breadcrumbData: AuthHeaderProps[] = [
         { title: "Refine Supabase Template", path: "/" },
-        { title: `作成`, path: null },
+        { title: `${resource?.label}作成`, path: `/${resource?.name}/create` },
     ];
 
     // サンプルデータからフィールドを生成
@@ -108,7 +108,8 @@ export default function TomatosCreatePage() {
             <Create
                 fields={fields}
                 isLoading={isLoadingSample}
-                error={error}                
+                error={error}
+                resourceLabel={resource?.label}
                 onCancel={() => list(resource?.name ?? "")}
                 onSubmit={onSubmit}
                 isCreating={isCreating}

@@ -7,6 +7,7 @@ import { authProviderClient } from "@providers/auth-provider/auth-provider.clien
 import { dataProvider, liveProvider } from "@providers/data-provider";
 import "@styles/globals.css";
 import { GalleryVerticalEnd } from "lucide-react";
+import { i18nProvider } from "@providers/i18n-provider";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -31,6 +32,7 @@ export default function RootLayout({
               authProvider={authProviderClient}
               dataProvider={dataProvider}
               liveProvider={liveProvider}
+              i18nProvider={i18nProvider}
               options={{
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
@@ -65,16 +67,17 @@ export default function RootLayout({
                 //     label: "レッスン予定"
                 //   },
                 // },
-                // {
-                //   name: "reservations",
-                //   list: "/reservations",
-                //   create: "/reservations/create",
-                //   edit: "/reservations/edit/:id",
-                //   show: "/reservations/show/:id",
-                //   meta: {
-                //     canDelete: true,
-                //   },
-                // },
+                {
+                  name: "reservations",
+                  list: "/reservations",
+                  create: "/reservations/create",
+                  edit: "/reservations/edit/:id",
+                  show: "/reservations/show/:id",
+                  meta: {
+                    canDelete: true,
+                    label: "予約"
+                  },
+                },
                 // {
                 //   name: "profiles",
                 //   list: "/profiles",

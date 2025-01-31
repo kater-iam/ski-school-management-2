@@ -18,7 +18,7 @@ export default function TomatosShowPage() {
 
     const breadcrumbData: AuthHeaderProps[] = [
         { title: "Refine Supabase Template", path: "/" },
-        { title: `詳細`, path: null },
+        { title: `${resource?.label}詳細`, path: `/${resource?.name}/show` },
     ]
 
     return (
@@ -27,7 +27,8 @@ export default function TomatosShowPage() {
             <Show
                 data={data?.data}
                 isLoading={isLoading}
-                error={isError ? new Error("データの取得に失敗しました") : undefined}                
+                error={isError ? new Error("データの取得に失敗しました") : undefined}
+                resourceLabel={resource?.label}
                 onEdit={(id) => edit(resource?.name ?? "", id)}
                 id={params.id as string}
             />
