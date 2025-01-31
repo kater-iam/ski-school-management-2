@@ -21,14 +21,16 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar"
-import { useResource } from "@refinedev/core"
+import { useRefineContext, useResource, useTranslate } from "@refinedev/core"
 import { useState } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { resources } = useResource();
+    const refineContext = useRefineContext()
+    const translate = useTranslate()
     const [data, setData] = useState({
         header: {
-            title: "Refine Supabase Template",
+            title: refineContext.options.title.text as string,
             description: "v1.0.0",
         },
         user: {
@@ -37,16 +39,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             avatar: "/avatars/shadcn.jpg",
         },
         navMain: resources?.map((resource) => ({
-            title: resource.meta?.label || resource.name,
+            title: translate(`resources.${resource.name}.name`),
             url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
             icon: List,
             items: [
                 {
-                    title: "一覧",
+                    title: translate(`resources.${resource.name}.titles.list`),
                     url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
                 },
                 ...(resource.canCreate ? [{
-                    title: "新規作成",
+                    title: translate(`resources.${resource.name}.titles.create`),
                     url: typeof resource.create === 'string' ? resource.create : `/${resource.name}/create`,
                 }] : []),
             ],

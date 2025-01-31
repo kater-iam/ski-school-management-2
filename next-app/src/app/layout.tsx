@@ -41,7 +41,7 @@ export default function RootLayout({
                 liveMode: "auto",
                 title: {
                   icon: <GalleryVerticalEnd />,
-                  text: "Refine Supabase Template"
+                  text: "スキーレッスン予約システム"
                 }
               }}
               resources={[
@@ -53,7 +53,6 @@ export default function RootLayout({
                   show: "/lessons/show/:id",
                   meta: {
                     canDelete: true,
-                    label: "レッスン"
                   },
                 },
                 // {
@@ -75,7 +74,6 @@ export default function RootLayout({
                   show: "/reservations/show/:id",
                   meta: {
                     canDelete: true,
-                    label: "予約"
                   },
                 },
                 // {

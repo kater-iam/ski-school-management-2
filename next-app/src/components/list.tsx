@@ -230,6 +230,9 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
     const { create } = useNavigation();
     const translate = useTranslate();
     
+    // リソース名の翻訳を取得
+    const resourceName = translate(`resources.${resource?.name}.name`);
+
     const handleDelete = (id: number) => {
         mutate(
             {
@@ -313,14 +316,24 @@ export const List: React.FC<ListProps> = ({ data: items, isLoading, error }) => 
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-end pb-4">
-                <Button
-                    onClick={() => create(resource?.name ?? "")}
-                    className="flex items-center gap-2"
-                >
-                    <Plus className="h-4 w-4" />
-                    新規作成
-                </Button>
+            <div className="pb-4">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-2xl font-bold">
+                            {translate(`resources.${resource?.name}.titles.list`)}
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            {resourceName}の一覧を表示しています。
+                        </p>
+                    </div>
+                    <Button
+                        onClick={() => create(resource?.name ?? "")}
+                        className="flex items-center gap-2"
+                    >
+                        <Plus className="h-4 w-4" />
+                        新規作成
+                    </Button>
+                </div>
             </div>
             <div className="rounded-md border">
                 <Table>

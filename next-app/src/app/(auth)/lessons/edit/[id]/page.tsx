@@ -1,6 +1,6 @@
 'use client';
 
-import { useResource, useNavigation, useUpdate, useSelect } from "@refinedev/core";
+import { useResource, useNavigation, useUpdate, useSelect, useRefineContext, useTranslate } from "@refinedev/core";
 import { useParams } from "next/navigation";
 import { useShowWithRelations } from "@components/hooks/use-show-with-relations";
 import { AuthHeader, AuthHeaderProps } from "@app/(auth)/_components/auth-header";
@@ -12,6 +12,8 @@ export default function TomatosEditPage() {
     const params = useParams();
     const { list } = useNavigation();
     const { mutate: update, isLoading: isUpdating } = useUpdate();
+    const translate = useTranslate()
+    const refineContext = useRefineContext()
 
     const { data, isLoading, isError } = useShowWithRelations({
         resource: resource?.name ?? "",
@@ -82,9 +84,10 @@ export default function TomatosEditPage() {
     };
 
     const breadcrumbData: AuthHeaderProps[] = [
-        { title: "Refine Supabase Template", path: "/" },
-        { title: `編集`, path: null },
-    ];
+        { title: refineContext.options.title.text as string, path: "/" },
+        { title: translate(`resources.${resource?.name}.titles.list`), path: `/${resource?.name}` },
+        { title: translate(`resources.${resource?.name}.titles.edit`), path: null },
+    ]
 
     const relationFields = {
         category_id: {
