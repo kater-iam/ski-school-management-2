@@ -2,10 +2,7 @@
 
 import * as React from "react"
 import {
-    Frame,
     GalleryVerticalEnd,
-    Map,
-    PieChart,
     List,
 } from "lucide-react"
 
@@ -21,54 +18,57 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar"
-import { useResource } from "@refinedev/core"
-import { useState } from "react";
+import { useGetIdentity, useRefineContext, useResource, useTranslate } from "@refinedev/core"
+import { useEffect, useState } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { resources } = useResource();
+    const refineContext = useRefineContext()
+    const translate = useTranslate()
+    const { data: user } = useGetIdentity<{
+        id: string;
+        email: string;
+    }>();
+
+
     const [data, setData] = useState({
         header: {
-            title: "Refine Supabase Template",
+            title: refineContext.options.title.text as string,
             description: "v1.0.0",
         },
         user: {
-            name: "shadcn",
-            email: "m@example.com",
-            avatar: "/avatars/shadcn.jpg",
+            name: '',
+            email: '',
+            avatar: "",
         },
         navMain: resources?.map((resource) => ({
-            title: resource.meta?.label || resource.name,
+            title: translate(`resources.${resource.name}.name`),
             url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
             icon: List,
             items: [
                 {
-                    title: "一覧",
+                    title: translate(`resources.${resource.name}.titles.list`),
                     url: typeof resource.list === 'string' ? resource.list : `/${resource.name}`,
                 },
                 ...(resource.canCreate ? [{
-                    title: "新規作成",
+                    title: translate(`resources.${resource.name}.titles.create`),
                     url: typeof resource.create === 'string' ? resource.create : `/${resource.name}/create`,
                 }] : []),
             ],
         })) || [],
-        projects: [
-            {
-                name: "Design Engineering",
-                url: "#",
-                icon: Frame,
-            },
-            {
-                name: "Sales & Marketing",
-                url: "#",
-                icon: PieChart,
-            },
-            {
-                name: "Travel",
-                url: "#",
-                icon: Map,
-            },
-        ],
     });
+
+    useEffect(() => {
+        if (!user) return
+        setData({
+            ...data,
+            user: {
+                name: user!.email.split('@')[0],
+                email: user!.email,
+                avatar: "",
+            },
+        })
+    }, [user])
 
 
     return (

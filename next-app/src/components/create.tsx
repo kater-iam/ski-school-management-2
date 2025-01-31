@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { pluralize } from "@/lib/utils";
-import { HttpError } from "@refinedev/core";
+import { HttpError, useResource, useTranslate } from "@refinedev/core";
 
 type RelationOption = {
     label: string;
@@ -24,8 +24,7 @@ interface Field {
 interface CreateProps {
     fields: Field[];
     isLoading: boolean;
-    error?: Error | HttpError | null;
-    resourceLabel?: string;
+    error?: Error | HttpError | null;    
     onCancel: () => void;
     onSubmit: (values: any) => void;
     isCreating: boolean;
@@ -41,11 +40,26 @@ interface CreateProps {
     };
 }
 
+// フィールド名を翻訳する関数
+const getFieldLabel = (key: string, translate: (key: string) => string, resourceName?: string) => {
+    const translationKey = `resources.${resourceName}.fields.${key}`;
+    const translated = translate(translationKey);
+    
+    // 翻訳が見つからない場合はデフォルトの表示を使用
+    if (translationKey === translated) {
+        return key
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+    
+    return translated;
+};
+
 export const Create: React.FC<CreateProps> = ({
     fields,
     isLoading,
-    error,
-    resourceLabel = "",
+    error,    
     onCancel,
     onSubmit,
     isCreating,
@@ -55,6 +69,9 @@ export const Create: React.FC<CreateProps> = ({
     setValue,
     relationFields = {},
 }) => {
+    const { resource } = useResource();
+    const translate = useTranslate();
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div style={{ color: "red" }}>{error.message}</div>;
 
@@ -63,9 +80,11 @@ export const Create: React.FC<CreateProps> = ({
             <div className="pb-4">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-2xl font-bold">{resourceLabel}作成</h2>
+                        <h2 className="text-2xl font-bold">
+                            {translate(`resources.${resource?.name}.titles.create`)}
+                        </h2>
                         <p className="text-sm text-muted-foreground">
-                            新しい{resourceLabel}を作成します。
+                            新しい{resource?.name}を作成します。
                         </p>
                     </div>
                     <div className="flex gap-2">
@@ -90,12 +109,14 @@ export const Create: React.FC<CreateProps> = ({
             </div>
             <form id="create-form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="space-y-6">
-                    {fields.map(({ key, label, type }) => {
+                    {fields.map(({ key, type }) => {
                         if (type === 'relation') {
                             const relationData = relationFields[key];
                             return (
                                 <div key={key} className="space-y-2">
-                                    <div className="text-sm font-medium">{pluralize(key.replace('_id', ''))}</div>
+                                    <div className="text-sm font-medium">
+                                        {getFieldLabel(key.replace('_id', ''), translate, resource?.name)}
+                                    </div>
                                     {relationData?.isLoading ? (
                                         <div>リレーション候補を取得中...</div>
                                     ) : (
@@ -126,7 +147,9 @@ export const Create: React.FC<CreateProps> = ({
 
                         return (
                             <div key={key} className="space-y-2">
-                                <div className="text-sm font-medium">{label}</div>
+                                <div className="text-sm font-medium">
+                                    {getFieldLabel(key, translate, resource?.name)}
+                                </div>
                                 {type === 'textarea' ? (
                                     <Textarea
                                         {...register(key)}

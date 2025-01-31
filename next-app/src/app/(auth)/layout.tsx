@@ -9,14 +9,13 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = cookies();
     const token = cookieStore.get("token");
     const isAuthenticated = await authProviderServer.check();
-
-    // テンプレートを確認するために一旦コメントアウト
-    // if (!isAuthenticated.authenticated) {
-    //     if (isAuthenticated.redirectTo) {
-    //         redirect(isAuthenticated.redirectTo);
-    //     }    
-    // return <>{children}</>;
-    // }
+    
+    if (!isAuthenticated.authenticated) {
+        if (isAuthenticated.redirectTo) {
+            redirect(isAuthenticated.redirectTo);
+        }    
+    return <>{children}</>;
+    }
 
     return (
         <SidebarProvider defaultOpen>
