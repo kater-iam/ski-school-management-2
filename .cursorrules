@@ -332,3 +332,113 @@ cd next-app && npx shadcn@latest add ${component-name}
    - インデックスが適切に設定されているか
    - クエリのパフォーマンスに問題ないか
 
+## 外部テーブル参照のルール
+
+1. 外部キーカラム名の命名規則
+   - 参照先のテーブル名を含める
+   - 単数形で記述
+   - 例：
+     - ❌ `schedule_id`
+     - ⭕️ `lesson_schedule_id`
+     - ❌ `user_id`
+     - ⭕️ `auth_user_id`
+
+2. 外部キー制約の設定
+   - `ON DELETE CASCADE`または`ON DELETE SET NULL`を必ず指定
+   - 例：
+     ```sql
+     REFERENCES lesson_schedules(id) ON DELETE CASCADE
+     REFERENCES auth.users(id) ON DELETE CASCADE
+     ```
+
+3. インデックスの作成
+   - 外部キーには必ずインデックスを作成
+   - インデックス名は`idx_テーブル名_カラム名`の形式
+   - 例：
+     ```sql
+     CREATE INDEX idx_reservations_lesson_schedule_id ON reservations(lesson_schedule_id);
+     CREATE INDEX idx_reservations_auth_user_id ON reservations(auth_user_id);
+     ```
+
+## マイグレーションファイルのルール
+
+1. ファイル命名規則
+   - 形式：`YYYYMMDD000000_description.sql`
+   - 例：
+     - ❌ `20240128_create_tables.sql`
+     - ⭕️ `20240128000001_create_profiles.sql`
+
+2. ファイル構成
+   - ENUMタイプの定義
+   - テーブルの作成
+   - カラムコメントの追加
+   - インデックスの作成
+   - トリガーの作成
+   - 例：
+     ```sql
+     -- Create enum types
+     CREATE TYPE user_role AS ENUM ('admin', 'instructor', 'student');
+
+     -- Create table
+     CREATE TABLE profiles (
+         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+         ...
+     );
+
+     -- Add column comments
+     COMMENT ON COLUMN profiles.id IS 'プロファイルID';
+     ...
+
+     -- Create indexes
+     CREATE INDEX idx_profiles_user_id ON profiles(user_id);
+     ...
+
+     -- Create triggers
+     CREATE TRIGGER update_profiles_updated_at
+         BEFORE UPDATE ON profiles
+         FOR EACH ROW
+         EXECUTE FUNCTION update_updated_at_column();
+     ```
+
+3. コメントの記述
+   - すべてのカラムに日本語でコメントを追加
+   - 外部キー参照の場合は参照先のテーブルも明記
+   - 例：
+     ```sql
+     COMMENT ON COLUMN reservations.lesson_schedule_id IS 'レッスンスケジュールID（lesson_schedulesテーブルの外部キー）';
+     ```
+
+4. タイムスタンプの設定
+   - `created_at`と`updated_at`カラムを必ず追加
+   - デフォルト値とトリガーを設定
+   - 例：
+     ```sql
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+     ```
+
+5. 依存関係の考慮
+   - 外部キー参照先のテーブルが先に作成されていることを確認
+   - マイグレーションファイルの番号で順序を制御
+   - 例：
+     - `20240128000001_common.sql`（共通関数）
+     - `20240128000002_profiles.sql`（プロファイル）
+     - `20240128000003_lessons.sql`（レッスン）
+     - `20240128000004_lesson_schedules.sql`（レッスンスケジュール）
+
+6. ロールバック手順の考慮
+   - 各テーブルの削除順序を考慮
+   - 依存関係の逆順で削除
+   - 例：
+     ```sql
+     -- テーブル作成時
+     CREATE TABLE profiles ...
+     CREATE TABLE lessons ...
+     CREATE TABLE lesson_schedules ...
+
+     -- ロールバック時
+     DROP TABLE lesson_schedules;
+     DROP TABLE lessons;
+     DROP TABLE profiles;
+     ```
+
