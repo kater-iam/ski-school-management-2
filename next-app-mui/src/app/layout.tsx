@@ -45,25 +45,8 @@ export default function RootLayout({
                     authProvider={authProviderClient}
                     dataProvider={dataProvider}
                     notificationProvider={useNotificationProvider}
-                    resources={[{
-                      name: "blog_posts",
-                      list: "/blog-posts",
-                      create: "/blog-posts/create",
-                      edit: "/blog-posts/edit/:id",
-                      show: "/blog-posts/show/:id",
-                      meta: {
-                        canDelete: true,
-                      },
-                    }, {
-                      name: "categories",
-                      list: "/categories",
-                      create: "/categories/create",
-                      edit: "/categories/edit/:id",
-                      show: "/categories/show/:id",
-                      meta: {
-                        canDelete: true,
-                      },
-                    }, {
+                    resources={[
+                    {
                       name: "lessons",
                       list: "/lessons",
                       create: "/lessons/create",
@@ -93,18 +76,6 @@ export default function RootLayout({
                       create: "/profiles/create",
                       edit: "/profiles/edit/:id",
                       show: "/profiles/show/:id"
-                    }, {
-                      name: "user_levels",
-                      list: "/user_levels",
-                      create: "/user_levels/create",
-                      edit: "/user_levels/edit/:id",
-                      show: "/user_levels/show/:id"
-                    }, {
-                      name: "lesson_levels",
-                      list: "/lesson_levels",
-                      create: "/lesson_levels/create",
-                      edit: "/lesson_levels/edit/:id",
-                      show: "/lesson_levels/show/:id"
                     }]}
                     options={{
                       syncWithLocation: true,
