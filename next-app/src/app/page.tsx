@@ -1,8 +1,13 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
+import { useRefineContext, useTranslate } from "@refinedev/core";
 import { GalleryVerticalEnd } from "lucide-react";
 import Link from "next/link";
 
-export default function IndexPage() {
+export default function IndexPage() {  
+  const refineContext = useRefineContext()
+  
   return (
     <section className="relative min-h-svh overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
@@ -36,7 +41,7 @@ export default function IndexPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <GalleryVerticalEnd className="size-6" />
             </div>
-            <h1 className="text-2xl font-bold">Refine Supabase Template</h1>
+            <h1 className="text-2xl font-bold">{refineContext.options.title.text}</h1>
           </div>
           
           <div className="mx-auto max-w-2xl space-y-6">

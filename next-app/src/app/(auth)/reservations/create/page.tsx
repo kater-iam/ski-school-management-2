@@ -1,6 +1,6 @@
 'use client';
 
-import { useResource, useNavigation, useCreate, useSelect, useList, useRefineContext, useTranslate } from "@refinedev/core";
+import { useResource, useNavigation, useCreate, useSelect, useList } from "@refinedev/core";
 import { AuthHeader, AuthHeaderProps } from "@app/(auth)/_components/auth-header";
 import { useForm } from "@refinedev/react-hook-form";
 import { Create } from "@/components/create";
@@ -9,8 +9,6 @@ export default function TomatosCreatePage() {
     const { resource } = useResource();
     const { list } = useNavigation();
     const { mutate: create, isLoading: isCreating } = useCreate();
-    const refineContext =  useRefineContext()
-    const translate = useTranslate()
 
     // 既存のデータを1件取得してフォームのフィールドを自動生成
     const { data: sampleData, isLoading: isLoadingSample, error } = useList({
@@ -64,9 +62,8 @@ export default function TomatosCreatePage() {
     };
 
     const breadcrumbData: AuthHeaderProps[] = [
-        { title: refineContext.options.title.text as string, path: "/" },
-        { title: translate(`resources.${resource?.name}.titles.list`), path: `/${resource?.name}` },
-        { title: translate(`resources.${resource?.name}.titles.create`), path: null },
+        { title: "Refine Supabase Template", path: "/" },
+        { title: `${resource?.label}作成`, path: `/${resource?.name}/create` },
     ];
 
     // サンプルデータからフィールドを生成
@@ -111,7 +108,8 @@ export default function TomatosCreatePage() {
             <Create
                 fields={fields}
                 isLoading={isLoadingSample}
-                error={error}                
+                error={error}
+                resourceLabel={resource?.label}
                 onCancel={() => list(resource?.name ?? "")}
                 onSubmit={onSubmit}
                 isCreating={isCreating}

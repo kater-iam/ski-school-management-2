@@ -5,7 +5,7 @@ import { Card, CardContent, CardTitle, CardHeader, CardDescription } from "@comp
 import { Input } from "@components/ui/input"
 import { Label } from "@components/ui/label"
 import { GalleryVerticalEnd } from "lucide-react"
-import { useForgotPassword } from "@refinedev/core"
+import { useForgotPassword, useRefineContext } from "@refinedev/core"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 
@@ -15,6 +15,7 @@ type ForgotPasswordFormData = {
 
 export function Page() {
   const { mutate: forgotPassword } = useForgotPassword();
+  const refineContext = useRefineContext()
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -44,7 +45,7 @@ export function Page() {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          Refine Supabase Template
+          {refineContext.options.title.text}
         </a>
 
         <div className="flex flex-col gap-6">

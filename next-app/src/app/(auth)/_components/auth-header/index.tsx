@@ -5,7 +5,7 @@ import React from "react"
 
 export interface AuthHeaderProps {
     title: string
-    path: string
+    path: string | null
 }
 
 interface Props {
@@ -23,9 +23,13 @@ export const AuthHeader = ({ data }: Props) => {
                         {data.map((item, index) => (
                             <React.Fragment key={`breadcrumb-${index}`}>
                                 <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href={item.path}>
-                                        {item.title}
-                                    </BreadcrumbLink>
+                                    {item.path ? (
+                                        <BreadcrumbLink href={item.path}>
+                                            {item.title}
+                                        </BreadcrumbLink>
+                                    ) : (
+                                        <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                                    )}
                                 </BreadcrumbItem>
                                 {index < data.length - 1 && (
                                     <BreadcrumbSeparator className="hidden md:block" />
