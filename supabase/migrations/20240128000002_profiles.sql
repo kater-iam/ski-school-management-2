@@ -10,8 +10,8 @@ CREATE TABLE profiles (
     phone VARCHAR(20),
     emergency_contact VARCHAR(20),
     role profile_role NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
     CONSTRAINT fk_profiles_user FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
