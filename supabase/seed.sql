@@ -1,27 +1,54 @@
 -- Start transaction
 BEGIN;
 
--- Import users
-INSERT INTO auth.users (id, email, raw_user_meta_data)
-VALUES
-    ('770e8400-e29b-41d4-a716-446655440001', 'student1@example.com', '{"name": "生徒1"}'),
-    ('770e8400-e29b-41d4-a716-446655440002', 'student2@example.com', '{"name": "生徒2"}'),
-    ('770e8400-e29b-41d4-a716-446655440003', 'student3@example.com', '{"name": "生徒3"}'),
-    ('770e8400-e29b-41d4-a716-446655440004', 'student4@example.com', '{"name": "生徒4"}'),
-    ('770e8400-e29b-41d4-a716-446655440005', 'student5@example.com', '{"name": "生徒5"}'),
-    ('770e8400-e29b-41d4-a716-446655440006', 'student6@example.com', '{"name": "生徒6"}'),
-    ('770e8400-e29b-41d4-a716-446655440007', 'student7@example.com', '{"name": "生徒7"}'),
-    ('770e8400-e29b-41d4-a716-446655440008', 'student8@example.com', '{"name": "生徒8"}'),
-    ('770e8400-e29b-41d4-a716-446655440009', 'student9@example.com', '{"name": "生徒9"}'),
-    ('770e8400-e29b-41d4-a716-446655440010', 'student10@example.com', '{"name": "生徒10"}'),
-    ('880e8400-e29b-41d4-a716-446655440001', 'instructor1@example.com', '{"name": "インストラクター1"}'),
-    ('880e8400-e29b-41d4-a716-446655440002', 'instructor2@example.com', '{"name": "インストラクター2"}'),
-    ('880e8400-e29b-41d4-a716-446655440021', 'instructor3@example.com', '{"name": "インストラクター3"}'),
-    ('880e8400-e29b-41d4-a716-446655440022', 'instructor4@example.com', '{"name": "インストラクター4"}');
-
+-- Import test users
+INSERT INTO auth.users (
+    instance_id,
+    id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    confirmation_token,
+    confirmation_sent_at,
+    recovery_token,
+    recovery_sent_at,
+    email_change_token_new,
+    email_change,
+    email_change_sent_at,
+    last_sign_in_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at
+) VALUES
+('670e8400-e29b-41d4-a716-446655440001', '670e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'admin@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('670e8400-e29b-41d4-a716-446655440002', '670e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'admin@kater.jp', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('880e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'instructor1@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('880e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'instructor2@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('880e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'instructor3@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('880e8400-e29b-41d4-a716-446655440004', '880e8400-e29b-41d4-a716-446655440004', 'authenticated', 'authenticated', 'instructor4@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'student1@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'student2@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'student3@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440004', '770e8400-e29b-41d4-a716-446655440004', 'authenticated', 'authenticated', 'student4@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440005', 'authenticated', 'authenticated', 'student5@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440006', '770e8400-e29b-41d4-a716-446655440006', 'authenticated', 'authenticated', 'student6@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440007', '770e8400-e29b-41d4-a716-446655440007', 'authenticated', 'authenticated', 'student7@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440008', '770e8400-e29b-41d4-a716-446655440008', 'authenticated', 'authenticated', 'student8@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440009', '770e8400-e29b-41d4-a716-446655440009', 'authenticated', 'authenticated', 'student9@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
+('770e8400-e29b-41d4-a716-446655440010', '770e8400-e29b-41d4-a716-446655440010', 'authenticated', 'authenticated', 'student10@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"student"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp);
+      
 -- Import profiles
 INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact, role)
 VALUES
+    ('670e8400-e29b-41d4-a716-446655440001', '670e8400-e29b-41d4-a716-446655440001', '管理者', '1', '090-2222-2221', '090-2222-2222', 'admin'),
+    ('670e8400-e29b-41d4-a716-446655440002', '670e8400-e29b-41d4-a716-446655440002', '管理者', '1', '090-2222-2221', '090-2222-2222', 'admin'),
+    ('880e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440001', 'インストラクター', '1', '090-2222-2221', '090-2222-2222', 'instructor'),
+    ('880e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440002', 'インストラクター', '2', '090-2222-2223', '090-2222-2224', 'instructor'),
+    ('880e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440003', 'インストラクター', '3', '090-2222-2225', '090-2222-2226', 'instructor'),
+    ('880e8400-e29b-41d4-a716-446655440004', '880e8400-e29b-41d4-a716-446655440004', 'インストラクター', '4', '090-2222-2227', '090-2222-2228', 'instructor'),
     ('770e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', '生徒', '1', '090-1111-1111', '090-1111-1112', 'student'),
     ('770e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', '生徒', '2', '090-1111-1113', '090-1111-1114', 'student'),
     ('770e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', '生徒', '3', '090-1111-1115', '090-1111-1116', 'student'),
@@ -31,11 +58,8 @@ VALUES
     ('770e8400-e29b-41d4-a716-446655440007', '770e8400-e29b-41d4-a716-446655440007', '生徒', '7', '090-1111-1123', '090-1111-1124', 'student'),
     ('770e8400-e29b-41d4-a716-446655440008', '770e8400-e29b-41d4-a716-446655440008', '生徒', '8', '090-1111-1125', '090-1111-1126', 'student'),
     ('770e8400-e29b-41d4-a716-446655440009', '770e8400-e29b-41d4-a716-446655440009', '生徒', '9', '090-1111-1127', '090-1111-1128', 'student'),
-    ('770e8400-e29b-41d4-a716-446655440010', '770e8400-e29b-41d4-a716-446655440010', '生徒', '10', '090-1111-1129', '090-1111-1130', 'student'),
-    ('880e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440001', 'インストラクター', '1', '090-2222-2221', '090-2222-2222', 'instructor'),
-    ('880e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440002', 'インストラクター', '2', '090-2222-2223', '090-2222-2224', 'instructor'),
-    ('880e8400-e29b-41d4-a716-446655440021', '880e8400-e29b-41d4-a716-446655440021', 'インストラクター', '3', '090-2222-2225', '090-2222-2226', 'instructor'),
-    ('880e8400-e29b-41d4-a716-446655440022', '880e8400-e29b-41d4-a716-446655440022', 'インストラクター', '4', '090-2222-2227', '090-2222-2228', 'instructor');
+    ('770e8400-e29b-41d4-a716-446655440010', '770e8400-e29b-41d4-a716-446655440010', '生徒', '10', '090-1111-1129', '090-1111-1130', 'student');
+
 
 -- Import lessons
 INSERT INTO lessons (id, name, description, duration, price, max_participants)
@@ -92,8 +116,8 @@ BEGIN
                         CASE (counter % 4)
                             WHEN 0 THEN '880e8400-e29b-41d4-a716-446655440001'
                             WHEN 1 THEN '880e8400-e29b-41d4-a716-446655440002'
-                            WHEN 2 THEN '880e8400-e29b-41d4-a716-446655440021'
-                            ELSE '880e8400-e29b-41d4-a716-446655440022'
+                            WHEN 2 THEN '880e8400-e29b-41d4-a716-446655440003'
+                            ELSE '880e8400-e29b-41d4-a716-446655440004'
                         END
                     )::UUID;
 
@@ -269,8 +293,8 @@ BEGIN
                         CASE (counter % 4)
                             WHEN 0 THEN '880e8400-e29b-41d4-a716-446655440001'
                             WHEN 1 THEN '880e8400-e29b-41d4-a716-446655440002'
-                            WHEN 2 THEN '880e8400-e29b-41d4-a716-446655440021'
-                            ELSE '880e8400-e29b-41d4-a716-446655440022'
+                            WHEN 2 THEN '880e8400-e29b-41d4-a716-446655440003'
+                            ELSE '880e8400-e29b-41d4-a716-446655440004'
                         END
                     )::UUID;
 
