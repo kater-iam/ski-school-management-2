@@ -1,5 +1,5 @@
 import React from "react";
-import { useShow, useOne, useMany } from "@refinedev/core";
+import { useShow, useOne, useList } from "@refinedev/core";
 import { Show, TagField, TextField, DateField } from "@refinedev/antd";
 import { Typography, Table } from "antd";
 
@@ -19,9 +19,8 @@ export const LessonSchedulesShow = () => {
         },
     });
 
-    const { data: reservationsData, isLoading: reservationsIsLoading } = useMany({
+    const { data: reservationsData, isLoading: reservationsIsLoading } = useList({
         resource: "reservations",
-        ids: [],
         queryOptions: {
             enabled: !!record?.id,
         },
@@ -38,19 +37,21 @@ export const LessonSchedulesShow = () => {
     const reservationsColumns = [
         {
             title: "予約者名",
-            dataIndex: ["profiles", "name"],
+            dataIndex: ["profiles"],
             key: "name",
+            render: (profile: any) => profile ? `${profile.last_name} ${profile.first_name}` : "-",
         },
         {
             title: "メールアドレス",
             dataIndex: ["profiles", "email"],
             key: "email",
+            render: (email: string) => email || "-",
         },
         {
             title: "予約日時",
             dataIndex: "created_at",
             key: "created_at",
-            render: (value: string) => <DateField value={value} format="YYYY年MM月DD日 HH時mm分" />,
+            render: (value: string) => value ? <DateField value={value} format="YYYY年MM月DD日 HH時mm分" /> : "-",
         },
     ];
 
