@@ -25,7 +25,7 @@ export const LessonSchedulesShow = () => {
             enabled: !!record?.id,
         },
         meta: {
-            select: "*, profiles(*)",
+            select: "*, profiles!reservations_student_profile_id_fkey(*)",
             filter: {
                 lesson_schedule_id: {
                     eq: record?.id,

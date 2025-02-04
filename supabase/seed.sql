@@ -201,7 +201,7 @@ BEGIN
                                 id,
                                 lesson_schedule_id,
                                 user_id,
-                                student_id,
+                                student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
@@ -378,7 +378,7 @@ BEGIN
                                 id,
                                 lesson_schedule_id,
                                 user_id,
-                                student_id,
+                                student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
