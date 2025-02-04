@@ -1,6 +1,7 @@
 -- Start transaction
 BEGIN;
 
+
 -- Import test users
 INSERT INTO auth.users (
     instance_id,
@@ -23,8 +24,8 @@ INSERT INTO auth.users (
     created_at,
     updated_at
 ) VALUES
+('00000000-0000-0000-0000-000000000000', 'a96ea053-60dd-4c85-a099-a403b3533f55','authenticated', 'authenticated', 'admin@kater.jp', crypt('password123', gen_salt('bf')),    current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp), 
 ('670e8400-e29b-41d4-a716-446655440001', '670e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'admin@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{"role":"admin"}'::jsonb, current_timestamp, current_timestamp),
-('670e8400-e29b-41d4-a716-446655440002', '670e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'admin@kater.jp', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb, '{"role":"admin"}'::jsonb, current_timestamp, current_timestamp),
 ('880e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440001', 'authenticated', 'authenticated', 'instructor1@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
 ('880e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440002', 'authenticated', 'authenticated', 'instructor2@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
 ('880e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440003', 'authenticated', 'authenticated', 'instructor3@example.com', crypt('password123', gen_salt('bf')), current_timestamp, '', current_timestamp, '', current_timestamp, '', '', current_timestamp, current_timestamp, '{"provider":"email","providers":["email"],"role":"instructor"}'::jsonb, '{}'::jsonb, current_timestamp, current_timestamp),
@@ -43,8 +44,6 @@ INSERT INTO auth.users (
 -- Import profiles
 INSERT INTO profiles (id, user_id, first_name, last_name, phone, emergency_contact, role)
 VALUES
-    ('670e8400-e29b-41d4-a716-446655440001', '670e8400-e29b-41d4-a716-446655440001', '管理者', '1', '090-2222-2221', '090-2222-2222', 'admin'),
-    ('670e8400-e29b-41d4-a716-446655440002', '670e8400-e29b-41d4-a716-446655440002', '管理者', '1', '090-2222-2221', '090-2222-2222', 'admin'),
     ('880e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440001', 'インストラクター', '1', '090-2222-2221', '090-2222-2222', 'instructor'),
     ('880e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440002', 'インストラクター', '2', '090-2222-2223', '090-2222-2224', 'instructor'),
     ('880e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440003', 'インストラクター', '3', '090-2222-2225', '090-2222-2226', 'instructor'),
