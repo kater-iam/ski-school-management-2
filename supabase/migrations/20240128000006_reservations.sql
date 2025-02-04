@@ -41,8 +41,7 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE reservations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     lesson_schedule_id UUID NOT NULL REFERENCES lesson_schedules(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-    student_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    student_profile_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
     reservation_number VARCHAR(255) NOT NULL UNIQUE,
     status reservation_status NOT NULL DEFAULT '申し込み',
     instructor_comment TEXT,
@@ -60,8 +59,7 @@ CREATE TRIGGER set_reservation_number
 COMMENT ON TABLE reservations IS 'レッスン予約';
 COMMENT ON COLUMN reservations.id IS '予約ID';
 COMMENT ON COLUMN reservations.lesson_schedule_id IS 'レッスンスケジュールID（lesson_schedulesテーブルの外部キー）';
-COMMENT ON COLUMN reservations.user_id IS '予約者のユーザーID（auth.usersテーブルの外部キー）';
-COMMENT ON COLUMN reservations.student_id IS '生徒のプロファイルID（profilesテーブルの外部キー）';
+COMMENT ON COLUMN reservations.student_profile_id IS '生徒のプロファイルID（profilesテーブルの外部キー）';
 COMMENT ON COLUMN reservations.reservation_number IS '予約番号';
 COMMENT ON COLUMN reservations.status IS '予約ステータス';
 COMMENT ON COLUMN reservations.instructor_comment IS 'インストラクターのコメント';
@@ -70,8 +68,7 @@ COMMENT ON COLUMN reservations.updated_at IS '更新日時';
 
 -- Create indexes
 CREATE INDEX idx_reservations_lesson_schedule_id ON reservations(lesson_schedule_id);
-CREATE INDEX idx_reservations_user_id ON reservations(user_id);
-CREATE INDEX idx_reservations_student_id ON reservations(student_id);
+CREATE INDEX idx_reservations_student_profile_id ON reservations(student_profile_id);
 
 -- Create trigger for updating updated_at
 CREATE TRIGGER update_reservations_updated_at
@@ -85,11 +82,11 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF NOT EXISTS (
         SELECT 1
-        FROM profiles
-        WHERE id = NEW.student_id
-        AND role = 'student'
+        FROM profiles p
+        WHERE p.id = NEW.student_profile_id
+        AND p.role = 'student'
     ) THEN
-        RAISE EXCEPTION 'student_id must reference a profile with student role';
+        RAISE EXCEPTION 'student_profile_id must reference a profile with student role';
     END IF;
     RETURN NEW;
 END;
@@ -113,22 +110,42 @@ CREATE POLICY "Enable insert for authenticated users only" ON reservations
     FOR INSERT
     TO authenticated
     WITH CHECK (
-        auth.uid() = user_id
+        EXISTS (
+            SELECT 1
+            FROM profiles p
+            WHERE p.id = student_profile_id
+            AND p.user_id = auth.uid()
+        )
     );
 
 CREATE POLICY "Enable update for authenticated users" ON reservations
     FOR UPDATE
     TO authenticated
     USING (
-        auth.uid() = user_id
+        EXISTS (
+            SELECT 1
+            FROM profiles p
+            WHERE p.id = student_profile_id
+            AND p.user_id = auth.uid()
+        )
     )
     WITH CHECK (
-        auth.uid() = user_id
+        EXISTS (
+            SELECT 1
+            FROM profiles p
+            WHERE p.id = student_profile_id
+            AND p.user_id = auth.uid()
+        )
     );
 
 CREATE POLICY "Enable delete for authenticated users" ON reservations
     FOR DELETE
     TO authenticated
     USING (
-        auth.uid() = user_id
+        EXISTS (
+            SELECT 1
+            FROM profiles p
+            WHERE p.id = student_profile_id
+            AND p.user_id = auth.uid()
+        )
     ); 

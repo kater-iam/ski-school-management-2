@@ -81,8 +81,7 @@ DECLARE
     year INT;
     month INT;
     day INT;
-    student_user_id UUID;
-    student_id UUID;
+    student_profile_id UUID;
 BEGIN
     -- 2024年から2035年までのループ
     FOR year IN 2024..2035 LOOP
@@ -182,7 +181,7 @@ BEGIN
                             ELSE 1
                         END LOOP
                             -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
-                            SELECT id INTO student_user_id 
+                            SELECT id INTO student_profile_id 
                             FROM profiles 
                             WHERE role = 'student' 
                             ORDER BY 
@@ -193,22 +192,17 @@ BEGIN
                                 END 
                             LIMIT 1;
 
-                            -- student_idは同じプロフィールのIDを使用
-                            SELECT student_user_id INTO student_id;
-
                             -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
                             INSERT INTO reservations (
                                 id,
                                 lesson_schedule_id,
-                                user_id,
                                 student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
                                 uuid_generate_v4(),
                                 schedule_id,
-                                student_user_id,
-                                student_id,
+                                student_profile_id,
                                 CASE 
                                     WHEN current_lesson_date < CURRENT_DATE THEN
                                         -- 過去の予約のステータス
@@ -359,7 +353,7 @@ BEGIN
                             ELSE 1
                         END LOOP
                             -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
-                            SELECT id INTO student_user_id 
+                            SELECT id INTO student_profile_id 
                             FROM profiles 
                             WHERE role = 'student' 
                             ORDER BY 
@@ -370,22 +364,17 @@ BEGIN
                                 END 
                             LIMIT 1;
 
-                            -- student_idは同じプロフィールのIDを使用
-                            SELECT student_user_id INTO student_id;
-
                             -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
                             INSERT INTO reservations (
                                 id,
                                 lesson_schedule_id,
-                                user_id,
                                 student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
                                 uuid_generate_v4(),
                                 schedule_id,
-                                student_user_id,
-                                student_id,
+                                student_profile_id,
                                 CASE 
                                     WHEN current_lesson_date < CURRENT_DATE THEN
                                         -- 過去の予約のステータス
