@@ -24,18 +24,6 @@ import authProvider from "./authProvider";
 import { Header } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
-import {
   ReservationsCreate,
   ReservationsEdit,
   ReservationsList,
@@ -48,6 +36,26 @@ import {
   LessonSchedulesShow,
 } from "./pages/lesson_schedules";
 import { supabaseClient } from "./utility";
+import {
+  LessonsList,
+  LessonsCreate,
+  LessonsEdit,
+  LessonsShow,
+} from "./pages/lessons";
+import {
+  InstructorSchedulesList,
+  InstructorSchedulesCreate,
+  InstructorSchedulesEdit,
+  InstructorSchedulesShow,
+} from "./pages/instructor_schedules";
+import {
+  ProfilesList,
+  ProfilesCreate,
+  ProfilesEdit,
+  ProfilesShow,
+} from "./pages/profiles";
+import { DashboardPage } from "./pages/dashboard";
+import { DashboardOutlined } from "@ant-design/icons";
 
 function App() {
   return (
@@ -64,23 +72,12 @@ function App() {
                 routerProvider={routerBindings}
                 notificationProvider={useNotificationProvider}
                 resources={[{
-                  name: "blog_posts",
-                  list: "/blog-posts",
-                  create: "/blog-posts/create",
-                  edit: "/blog-posts/edit/:id",
-                  show: "/blog-posts/show/:id",
+                  name: "dashboard",
+                  list: "/dashboard",
                   meta: {
-                    canDelete: true,
-                  },
-                }, {
-                  name: "categories",
-                  list: "/categories",
-                  create: "/categories/create",
-                  edit: "/categories/edit/:id",
-                  show: "/categories/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
+                    icon: <DashboardOutlined />,
+                    label: "ダッシュボード"
+                  }
                 }, {
                   name: "lessons",
                   list: "/lessons",
@@ -111,18 +108,6 @@ function App() {
                   create: "/profiles/create",
                   edit: "/profiles/edit/:id",
                   show: "/profiles/show/:id"
-                }, {
-                  name: "user_levels",
-                  list: "/user_levels",
-                  create: "/user_levels/create",
-                  edit: "/user_levels/edit/:id",
-                  show: "/user_levels/show/:id"
-                }, {
-                  name: "lesson_levels",
-                  list: "/lesson_levels",
-                  create: "/lesson_levels/create",
-                  edit: "/lesson_levels/edit/:id",
-                  show: "/lesson_levels/show/:id"
                 }]}
                 options={{
                   syncWithLocation: true,
@@ -149,8 +134,9 @@ function App() {
                   >
                     <Route
                       index
-                      element={<NavigateToResource resource="reservations" />}
+                      element={<NavigateToResource resource="dashboard" />}
                     />
+                    <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/reservations">
                       <Route index element={<ReservationsList />} />
                       <Route path="create" element={<ReservationsCreate />} />
@@ -163,11 +149,23 @@ function App() {
                       <Route path="edit/:id" element={<LessonSchedulesEdit />} />
                       <Route path="show/:id" element={<LessonSchedulesShow />} />
                     </Route>
-                    <Route path="/categories">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
+                    <Route path="/lessons">
+                      <Route index element={<LessonsList />} />
+                      <Route path="create" element={<LessonsCreate />} />
+                      <Route path="edit/:id" element={<LessonsEdit />} />
+                      <Route path="show/:id" element={<LessonsShow />} />
+                    </Route>
+                    <Route path="/instructor_schedules">
+                      <Route index element={<InstructorSchedulesList />} />
+                      <Route path="create" element={<InstructorSchedulesCreate />} />
+                      <Route path="edit/:id" element={<InstructorSchedulesEdit />} />
+                      <Route path="show/:id" element={<InstructorSchedulesShow />} />
+                    </Route>
+                    <Route path="/profiles">
+                      <Route index element={<ProfilesList />} />
+                      <Route path="create" element={<ProfilesCreate />} />
+                      <Route path="edit/:id" element={<ProfilesEdit />} />
+                      <Route path="show/:id" element={<ProfilesShow />} />
                     </Route>
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>

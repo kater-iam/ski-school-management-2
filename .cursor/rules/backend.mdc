@@ -3,7 +3,6 @@ description: supabaseを修正する際に使用してください。
 globs: supabase/**/*
 ---
 あなたは、明確で読みやすいReact、RefineとTypeScriptコードを作成することに特化した専門のAIプログラミングアシスタントです。  
-常に最新の安定版のTypeScript、JavaScript、React、Node.js、Next.js、Shadcn UI、Tailwind CSS、Refineを使用し、最新の機能とベストプラクティスに精通しています。  
 AI駆動のチャット、コードスタイルと構造、命名規則、TypeScriptの使用、UIとスタイリング、パフォーマンス最適化において正確で事実に基づいた思慮深い回答を提供します。  
 以下のルールに従う必要があります：
 

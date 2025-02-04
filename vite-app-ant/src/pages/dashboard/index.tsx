@@ -1,29 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import { Card, Button, Typography, Table, Space } from "antd";
-import { CalendarOutlined } from "@ant-design/icons";
+import { CalendarOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { useState, useEffect } from "react";
 
 const { Title } = Typography;
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs().startOf('day'));
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [hasNext, setHasNext] = useState(false);
 
-  const today = dayjs().startOf('day');
-  const tomorrow = dayjs().endOf('day');
-
-  const { data, isLoading } = useList({
+  // 現在の日付のレッスンを取得
+  const { data: currentData, isLoading } = useList({
     resource: "lesson_schedules",
     filters: [
       {
         field: "start_time",
         operator: "gte",
-        value: today.toISOString(),
+        value: currentDate.toISOString(),
       },
       {
         field: "start_time",
-        operator: "lte",
-        value: tomorrow.toISOString(),
+        operator: "lt",
+        value: currentDate.add(1, 'day').toISOString(),
       },
     ],
     pagination: {
@@ -33,6 +35,57 @@ export const DashboardPage: React.FC = () => {
       select: "*, lessons(name), profiles!instructor_id(first_name, last_name)",
     },
   });
+
+  // 前の日のレッスンを確認
+  const { data: prevData } = useList({
+    resource: "lesson_schedules",
+    filters: [
+      {
+        field: "start_time",
+        operator: "lt",
+        value: currentDate.toISOString(),
+      },
+    ],
+    pagination: {
+      pageSize: 1,
+    },
+    sorters: [{ field: "start_time", order: "desc" }],
+  });
+
+  // 次の日のレッスンを確認
+  const { data: nextData } = useList({
+    resource: "lesson_schedules",
+    filters: [
+      {
+        field: "start_time",
+        operator: "gt",
+        value: currentDate.add(1, 'day').toISOString(),
+      },
+    ],
+    pagination: {
+      pageSize: 1,
+    },
+    sorters: [{ field: "start_time", order: "asc" }],
+  });
+
+  useEffect(() => {
+    setHasPrevious(!!prevData?.data?.length);
+    setHasNext(!!nextData?.data?.length);
+  }, [prevData, nextData]);
+
+  const handlePrevious = () => {
+    if (prevData?.data?.[0]) {
+      const prevDate = dayjs(prevData.data[0].start_time).startOf('day');
+      setCurrentDate(prevDate);
+    }
+  };
+
+  const handleNext = () => {
+    if (nextData?.data?.[0]) {
+      const nextDate = dayjs(nextData.data[0].start_time).startOf('day');
+      setCurrentDate(nextDate);
+    }
+  };
 
   const columns = [
     {
@@ -96,13 +149,38 @@ export const DashboardPage: React.FC = () => {
         </div>
       </Card>
 
-      <Card title="本日のレッスン">
+      <Card 
+        title={
+          <Space>
+            <Button 
+              type="text" 
+              icon={<LeftOutlined />} 
+              disabled={!hasPrevious}
+              onClick={handlePrevious}
+            >
+              前の日
+            </Button>
+            {currentDate.format("YYYY年MM月DD日")}のレッスン
+            <Button 
+              type="text" 
+              icon={<RightOutlined />} 
+              disabled={!hasNext}
+              onClick={handleNext}
+            >
+              次の日
+            </Button>
+          </Space>
+        }
+      >
         <Table
           columns={columns}
-          dataSource={data?.data}
+          dataSource={currentData?.data}
           loading={isLoading}
           rowKey="id"
           pagination={false}
+          locale={{
+            emptyText: "この日のレッスンはありません",
+          }}
         />
       </Card>
     </Space>

@@ -10,13 +10,11 @@ AI駆動のチャット、コードスタイルと構造、命名規則、TypeSc
 - Reactファイルはnext-app/srcディレクトリに定義します。
 - React v18を使用してReactDOM.createRootでルートを作成し、StrictModeでラップしてレンダリングします。
 - 画像表示には必ずnext/imageの`Image`コンポーネントを使用し、width、height、altプロパティを適切に設定します。
-- migrationファイルはテーブルごとにファイルを分けてください。
-- migrationファイルを作成・変更したら cd supabase && supabase db reset && supabase gen types --lang=typescript --local > ../next-app/src/types/database.types.ts && cd ../next-app を実行してください。
+
 - 日付のformatは2000年11月11日のようにYYYY年MM月DD日としてください。
 - 時間のformatは11時11分のようにHH時MM分としてください。
 - 機能や不具合を修正したら、next-app/cypress内のテストコードを修正してください。その後、cypressのcliコマンドでそのテストが通過することを必ず確認してください。
 - /next-app/src/providers/data-provider/custom-data-provider.ts にカスタムロジックを変更してください。
-- コミットログのフォーマットは - ${verb} ${message} とし英語で記載してください。
 
 ## refineドキュメント
 
