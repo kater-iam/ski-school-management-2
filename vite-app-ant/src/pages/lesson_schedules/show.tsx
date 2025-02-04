@@ -25,7 +25,19 @@ export const LessonSchedulesShow = () => {
             enabled: !!record?.id,
         },
         meta: {
-            select: "*, profiles!reservations_student_profile_id_fkey(*)",
+            select: `
+                *,
+                profiles!student_profile_id (
+                    id,
+                    first_name,
+                    last_name,
+                    phone,
+                    skill_level,
+                    address,
+                    emergency_contact_name,
+                    emergency_contact_phone
+                )
+            `,
             filter: {
                 lesson_schedule_id: {
                     eq: record?.id,
@@ -33,6 +45,8 @@ export const LessonSchedulesShow = () => {
             },
         },
     });
+
+    console.log('reservationsData:', reservationsData); // デバッグ用
 
     const reservationsColumns = [
         {
@@ -42,10 +56,37 @@ export const LessonSchedulesShow = () => {
             render: (profile: any) => profile ? `${profile.last_name} ${profile.first_name}` : "-",
         },
         {
-            title: "メールアドレス",
-            dataIndex: ["profiles", "email"],
-            key: "email",
-            render: (email: string) => email || "-",
+            title: "電話番号",
+            dataIndex: ["profiles", "phone"],
+            key: "phone",
+            render: (phone: string) => phone || "-",
+        },
+        {
+            title: "スキルレベル",
+            dataIndex: ["profiles", "skill_level"],
+            key: "skill_level",
+            render: (skill_level: string) => skill_level || "-",
+        },
+        {
+            title: "住所",
+            dataIndex: ["profiles", "address"],
+            key: "address",
+            render: (address: string) => address || "-",
+        },
+        {
+            title: "緊急連絡先",
+            dataIndex: ["profiles"],
+            key: "emergency_contact",
+            render: (profile: any) => 
+                profile?.emergency_contact_name && profile?.emergency_contact_phone
+                    ? `${profile.emergency_contact_name} (${profile.emergency_contact_phone})`
+                    : "-",
+        },
+        {
+            title: "予約ステータス",
+            dataIndex: "status",
+            key: "status",
+            render: (status: string) => status || "-",
         },
         {
             title: "予約日時",
