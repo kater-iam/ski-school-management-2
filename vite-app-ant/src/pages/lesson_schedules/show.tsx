@@ -32,10 +32,7 @@ export const LessonSchedulesShow = () => {
                     first_name,
                     last_name,
                     phone,
-                    skill_level,
-                    address,
-                    emergency_contact_name,
-                    emergency_contact_phone
+                    emergency_contact
                 )
             `,
             filter: {
@@ -60,18 +57,6 @@ export const LessonSchedulesShow = () => {
             dataIndex: ["profiles", "phone"],
             key: "phone",
             render: (phone: string) => phone || "-",
-        },
-        {
-            title: "スキルレベル",
-            dataIndex: ["profiles", "skill_level"],
-            key: "skill_level",
-            render: (skill_level: string) => skill_level || "-",
-        },
-        {
-            title: "住所",
-            dataIndex: ["profiles", "address"],
-            key: "address",
-            render: (address: string) => address || "-",
         },
         {
             title: "緊急連絡先",
