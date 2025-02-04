@@ -68,7 +68,14 @@ BEGIN
             current_lesson_date := make_date(year, month, 1);
             WHILE current_lesson_date < make_date(year + 1, 1, 1) LOOP
                 -- 各日2コマのレッスンを作成
-                FOR time_slot IN 0..1 LOOP
+                -- 土日は4コマ、平日は1-2コマに調整
+                FOR time_slot IN 0..(
+                    CASE EXTRACT(DOW FROM current_lesson_date)
+                        WHEN 0 THEN 3  -- 日曜日は4コマ
+                        WHEN 6 THEN 3  -- 土曜日は4コマ
+                        ELSE CASE WHEN random() < 0.3 THEN 0 ELSE 1 END  -- 平日は30%で1コマ、70%で2コマ
+                    END
+                ) LOOP
                     -- レッスンIDとインストラクターIDを設定
                     lesson_id := (
                         CASE (counter % 6)
@@ -103,41 +110,113 @@ BEGIN
                         lesson_id,
                         instructor_id,
                         current_lesson_date + 
-                        CASE WHEN time_slot = 0 THEN INTERVAL '10 hours' ELSE INTERVAL '13 hours' END,
+                        CASE 
+                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
+                            ELSE INTERVAL '17 hours'
+                        END,
                         current_lesson_date + 
-                        CASE WHEN time_slot = 0 THEN INTERVAL '12 hours' ELSE INTERVAL '15 hours' END,
+                        CASE 
+                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
+                            ELSE INTERVAL '19 hours'
+                        END,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status
                         END
                     ) RETURNING id INTO schedule_id;
 
-                    -- 過去の日付の場合は予約データも作成（50%の確率で予約あり）
-                    IF current_lesson_date < CURRENT_DATE AND random() < 0.5 THEN
-                        -- ランダムな生徒を選択
-                        SELECT id INTO student_user_id FROM profiles WHERE role = 'student' ORDER BY random() LIMIT 1;
-                        SELECT id INTO student_id FROM profiles WHERE role = 'student' ORDER BY random() LIMIT 1;
+                    -- 予約データを作成（過去と未来で異なる確率とステータスを設定）
+                    IF random() < (
+                        CASE 
+                            WHEN current_lesson_date < CURRENT_DATE THEN
+                                -- 過去の予約の確率
+                                CASE EXTRACT(DOW FROM current_lesson_date)
+                                    WHEN 0 THEN 0.9  -- 日曜日は90%
+                                    WHEN 6 THEN 0.8  -- 土曜日は80%
+                                    WHEN 5 THEN 0.6  -- 金曜日は60%
+                                    ELSE 0.3         -- その他平日は30%
+                                END
+                            ELSE
+                                -- 未来の予約の確率（過去より少なめ）
+                                CASE EXTRACT(DOW FROM current_lesson_date)
+                                    WHEN 0 THEN 0.7  -- 日曜日は70%
+                                    WHEN 6 THEN 0.6  -- 土曜日は60%
+                                    WHEN 5 THEN 0.4  -- 金曜日は40%
+                                    ELSE 0.2         -- その他平日は20%
+                                END
+                        END
+                    ) THEN
+                        -- ランダムな生徒を選択（土日は複数予約を許可）
+                        FOR i IN 1..CASE 
+                            WHEN EXTRACT(DOW FROM current_lesson_date) IN (0, 6) AND random() < 0.4 THEN 
+                                CASE WHEN random() < 0.3 THEN 3  -- 30%の確率で3件の予約
+                                     ELSE 2                      -- 70%の確率で2件の予約
+                                END
+                            ELSE 1
+                        END LOOP
+                            -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
+                            SELECT id INTO student_user_id 
+                            FROM profiles 
+                            WHERE role = 'student' 
+                            ORDER BY 
+                                CASE 
+                                    WHEN id IN ('770e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440002') 
+                                    AND random() < 0.4 THEN 0  -- 40%の確率で特定の生徒を優先
+                                    ELSE random() 
+                                END 
+                            LIMIT 1;
 
-                        INSERT INTO reservations (
-                            id,
-                            lesson_schedule_id,
-                            user_id,
-                            student_id,
-                            status,
-                            instructor_comment
-                        ) VALUES (
-                            uuid_generate_v4(),
-                            schedule_id,
-                            student_user_id,
-                            student_id,
-                            '受講済'::reservation_status,
-                            CASE (counter % 4)
-                                WHEN 0 THEN 'とても上達しています。次回はより難しい斜面に挑戦しましょう。'
-                                WHEN 1 THEN '基本動作が安定してきました。引き続き練習を重ねましょう。'
-                                WHEN 2 THEN 'ターンの切り替えがスムーズになってきました。'
-                                ELSE 'スピードコントロールが上手くなってきています。'
-                            END
-                        );
+                            -- student_idは同じプロフィールのIDを使用
+                            SELECT student_user_id INTO student_id;
+
+                            -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
+                            INSERT INTO reservations (
+                                id,
+                                lesson_schedule_id,
+                                user_id,
+                                student_id,
+                                status,
+                                instructor_comment
+                            ) VALUES (
+                                uuid_generate_v4(),
+                                schedule_id,
+                                student_user_id,
+                                student_id,
+                                CASE 
+                                    WHEN current_lesson_date < CURRENT_DATE THEN
+                                        -- 過去の予約のステータス
+                                        CASE 
+                                            WHEN random() < 0.8 THEN '受講済'  -- 80%
+                                            WHEN random() < 0.5 THEN 'キャンセル'  -- 10%
+                                            ELSE '申し込み承認'  -- 10%
+                                        END
+                                    ELSE
+                                        -- 未来の予約のステータス
+                                        CASE 
+                                            WHEN random() < 0.7 THEN '申し込み承認'  -- 70%
+                                            WHEN random() < 0.8 THEN '申し込み'  -- 20%
+                                            ELSE 'キャンセル'  -- 10%
+                                        END
+                                END::reservation_status,
+                                CASE 
+                                    WHEN current_lesson_date < CURRENT_DATE THEN
+                                        -- 過去の予約のコメント
+                                        CASE 
+                                            WHEN random() < 0.2 THEN 'とても上達しています。次回はより難しい斜面に挑戦しましょう。基本的な姿勢が安定してきており、ターンの切り替えもスムーズです。'
+                                            WHEN random() < 0.4 THEN '基本動作が安定してきました。引き続き練習を重ねましょう。特に内倒の意識を持って滑ることで、よりスムーズなターンができるようになるでしょう。'
+                                            WHEN random() < 0.6 THEN 'ターンの切り替えがスムーズになってきました。次回は、より急な斜面でのスピードコントロールを練習していきましょう。'
+                                            WHEN random() < 0.8 THEN 'スピードコントロールが上手くなってきています。ポジションの取り方も良くなってきました。次回は、不整地での滑りにも挑戦してみましょう。'
+                                            ELSE '今日は天候が良く、絶好のレッスン日和でした。基本的な技術は着実に身についてきています。次回は、より実践的な総合滑降にチャレンジしてみましょう。'
+                                        END
+                                    ELSE
+                                        NULL  -- 未来の予約にはコメントなし
+                                END
+                            );
+                        END LOOP;
                     END IF;
 
                     -- インストラクタースケジュールを挿入
@@ -152,7 +231,7 @@ BEGIN
                         instructor_id,
                         current_lesson_date,
                         '09:00',
-                        '17:00'
+                        '19:00'  -- 終業時間を19:00に延長（土日の遅いコマに対応）
                     );
 
                     counter := counter + 1;
@@ -166,7 +245,14 @@ BEGIN
             current_lesson_date := make_date(year + 1, month, 1);
             WHILE current_lesson_date < make_date(year + 1, month + 1, 1) LOOP
                 -- 各日2コマのレッスンを作成
-                FOR time_slot IN 0..1 LOOP
+                -- 土日は4コマ、平日は1-2コマに調整
+                FOR time_slot IN 0..(
+                    CASE EXTRACT(DOW FROM current_lesson_date)
+                        WHEN 0 THEN 3  -- 日曜日は4コマ
+                        WHEN 6 THEN 3  -- 土曜日は4コマ
+                        ELSE CASE WHEN random() < 0.3 THEN 0 ELSE 1 END  -- 平日は30%で1コマ、70%で2コマ
+                    END
+                ) LOOP
                     -- レッスンIDとインストラクターIDを設定
                     lesson_id := (
                         CASE (counter % 6)
@@ -201,41 +287,113 @@ BEGIN
                         lesson_id,
                         instructor_id,
                         current_lesson_date + 
-                        CASE WHEN time_slot = 0 THEN INTERVAL '10 hours' ELSE INTERVAL '13 hours' END,
+                        CASE 
+                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
+                            ELSE INTERVAL '17 hours'
+                        END,
                         current_lesson_date + 
-                        CASE WHEN time_slot = 0 THEN INTERVAL '12 hours' ELSE INTERVAL '15 hours' END,
+                        CASE 
+                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
+                            ELSE INTERVAL '19 hours'
+                        END,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status
                         END
                     ) RETURNING id INTO schedule_id;
 
-                    -- 過去の日付の場合は予約データも作成（50%の確率で予約あり）
-                    IF current_lesson_date < CURRENT_DATE AND random() < 0.5 THEN
-                        -- ランダムな生徒を選択
-                        SELECT id INTO student_user_id FROM profiles WHERE role = 'student' ORDER BY random() LIMIT 1;
-                        SELECT id INTO student_id FROM profiles WHERE role = 'student' ORDER BY random() LIMIT 1;
+                    -- 予約データを作成（過去と未来で異なる確率とステータスを設定）
+                    IF random() < (
+                        CASE 
+                            WHEN current_lesson_date < CURRENT_DATE THEN
+                                -- 過去の予約の確率
+                                CASE EXTRACT(DOW FROM current_lesson_date)
+                                    WHEN 0 THEN 0.9  -- 日曜日は90%
+                                    WHEN 6 THEN 0.8  -- 土曜日は80%
+                                    WHEN 5 THEN 0.6  -- 金曜日は60%
+                                    ELSE 0.3         -- その他平日は30%
+                                END
+                            ELSE
+                                -- 未来の予約の確率（過去より少なめ）
+                                CASE EXTRACT(DOW FROM current_lesson_date)
+                                    WHEN 0 THEN 0.7  -- 日曜日は70%
+                                    WHEN 6 THEN 0.6  -- 土曜日は60%
+                                    WHEN 5 THEN 0.4  -- 金曜日は40%
+                                    ELSE 0.2         -- その他平日は20%
+                                END
+                        END
+                    ) THEN
+                        -- ランダムな生徒を選択（土日は複数予約を許可）
+                        FOR i IN 1..CASE 
+                            WHEN EXTRACT(DOW FROM current_lesson_date) IN (0, 6) AND random() < 0.4 THEN 
+                                CASE WHEN random() < 0.3 THEN 3  -- 30%の確率で3件の予約
+                                     ELSE 2                      -- 70%の確率で2件の予約
+                                END
+                            ELSE 1
+                        END LOOP
+                            -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
+                            SELECT id INTO student_user_id 
+                            FROM profiles 
+                            WHERE role = 'student' 
+                            ORDER BY 
+                                CASE 
+                                    WHEN id IN ('770e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440002') 
+                                    AND random() < 0.4 THEN 0  -- 40%の確率で特定の生徒を優先
+                                    ELSE random() 
+                                END 
+                            LIMIT 1;
 
-                        INSERT INTO reservations (
-                            id,
-                            lesson_schedule_id,
-                            user_id,
-                            student_id,
-                            status,
-                            instructor_comment
-                        ) VALUES (
-                            uuid_generate_v4(),
-                            schedule_id,
-                            student_user_id,
-                            student_id,
-                            '受講済'::reservation_status,
-                            CASE (counter % 4)
-                                WHEN 0 THEN 'とても上達しています。次回はより難しい斜面に挑戦しましょう。'
-                                WHEN 1 THEN '基本動作が安定してきました。引き続き練習を重ねましょう。'
-                                WHEN 2 THEN 'ターンの切り替えがスムーズになってきました。'
-                                ELSE 'スピードコントロールが上手くなってきています。'
-                            END
-                        );
+                            -- student_idは同じプロフィールのIDを使用
+                            SELECT student_user_id INTO student_id;
+
+                            -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
+                            INSERT INTO reservations (
+                                id,
+                                lesson_schedule_id,
+                                user_id,
+                                student_id,
+                                status,
+                                instructor_comment
+                            ) VALUES (
+                                uuid_generate_v4(),
+                                schedule_id,
+                                student_user_id,
+                                student_id,
+                                CASE 
+                                    WHEN current_lesson_date < CURRENT_DATE THEN
+                                        -- 過去の予約のステータス
+                                        CASE 
+                                            WHEN random() < 0.8 THEN '受講済'  -- 80%
+                                            WHEN random() < 0.5 THEN 'キャンセル'  -- 10%
+                                            ELSE '申し込み承認'  -- 10%
+                                        END
+                                    ELSE
+                                        -- 未来の予約のステータス
+                                        CASE 
+                                            WHEN random() < 0.7 THEN '申し込み承認'  -- 70%
+                                            WHEN random() < 0.8 THEN '申し込み'  -- 20%
+                                            ELSE 'キャンセル'  -- 10%
+                                        END
+                                END::reservation_status,
+                                CASE 
+                                    WHEN current_lesson_date < CURRENT_DATE THEN
+                                        -- 過去の予約のコメント
+                                        CASE 
+                                            WHEN random() < 0.2 THEN 'とても上達しています。次回はより難しい斜面に挑戦しましょう。基本的な姿勢が安定してきており、ターンの切り替えもスムーズです。'
+                                            WHEN random() < 0.4 THEN '基本動作が安定してきました。引き続き練習を重ねましょう。特に内倒の意識を持って滑ることで、よりスムーズなターンができるようになるでしょう。'
+                                            WHEN random() < 0.6 THEN 'ターンの切り替えがスムーズになってきました。次回は、より急な斜面でのスピードコントロールを練習していきましょう。'
+                                            WHEN random() < 0.8 THEN 'スピードコントロールが上手くなってきています。ポジションの取り方も良くなってきました。次回は、不整地での滑りにも挑戦してみましょう。'
+                                            ELSE '今日は天候が良く、絶好のレッスン日和でした。基本的な技術は着実に身についてきています。次回は、より実践的な総合滑降にチャレンジしてみましょう。'
+                                        END
+                                    ELSE
+                                        NULL  -- 未来の予約にはコメントなし
+                                END
+                            );
+                        END LOOP;
                     END IF;
 
                     -- インストラクタースケジュールを挿入
@@ -250,7 +408,7 @@ BEGIN
                         instructor_id,
                         current_lesson_date,
                         '09:00',
-                        '17:00'
+                        '19:00'  -- 終業時間を19:00に延長（土日の遅いコマに対応）
                     );
 
                     counter := counter + 1;
