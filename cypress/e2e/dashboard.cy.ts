@@ -1,5 +1,8 @@
 describe('ダッシュボード', () => {
   beforeEach(() => {
+    // APIレスポンスをモック
+    cy.intercept('GET', '**/lesson_schedules*', { fixture: 'lesson_schedules.json' }).as('getLessonSchedules');
+    
     // テスト前にログイン画面にアクセス
     cy.visit('/login');
   });
@@ -33,22 +36,25 @@ describe('ダッシュボード', () => {
     cy.get('input[id="password"]').clear().type('password123');
     cy.get('button[type="submit"]').click();
 
-    // 現在の日付を取得
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const dateString = `${year}年${month}月${day}日`;
+    // APIレスポンスを待機
+    cy.wait('@getLessonSchedules');
 
-    // 現在の日付が表示されていることを確認
-    cy.contains(dateString).should('be.visible');
+    // 前の日のデータが存在することを確認
+    cy.contains('button', '前の日').should('not.be.disabled');
 
     // 前の日ボタンをクリックして日付が変更されることを確認
     cy.contains('button', '前の日').click();
-    cy.contains(dateString).should('not.exist');
+    cy.wait('@getLessonSchedules');
+    cy.get('.ant-table-row').first().should('contain', '09時00分');
+    cy.get('.ant-table-row').first().should('contain', '初級スキーレッスン');
 
-    // 次の日ボタンをクリックして元の日付に戻ることを確認
+    // 次の日ボタンが有効になることを確認
+    cy.contains('button', '次の日').should('not.be.disabled');
+
+    // 次の日ボタンをクリックして日付が変更されることを確認
     cy.contains('button', '次の日').click();
-    cy.contains(dateString).should('be.visible');
+    cy.wait('@getLessonSchedules');
+    cy.get('.ant-table-row').first().should('contain', '13時00分');
+    cy.get('.ant-table-row').first().should('contain', '中級スキーレッスン');
   });
 }); 
