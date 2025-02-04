@@ -1,6 +1,7 @@
-/** @type {import('next').NextConfig} */
+// next.config.js
 const nextConfig = {
-  output: "standalone",
+  output: "export", // 静的サイトとしてエクスポート
+  trailingSlash: true, // すべてのページに `/` を追加
 };
 
-export default nextConfig;
+module.exports = nextConfig;

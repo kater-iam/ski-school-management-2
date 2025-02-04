@@ -1,6 +1,42 @@
 -- Create enum type
 CREATE TYPE reservation_status AS ENUM ('申し込み', '申し込み承認', '受講済', 'キャンセル');
 
+-- Create function to generate reservation number
+CREATE OR REPLACE FUNCTION generate_reservation_number()
+RETURNS TRIGGER AS $$
+DECLARE
+    year_month TEXT;
+    sequence_number INT;
+BEGIN
+    -- Get current year and month in YYYYMM format
+    year_month := TO_CHAR(CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Tokyo', 'YYYYMM');
+    
+    -- Get the next sequence number for this month
+    WITH RECURSIVE seq AS (
+        SELECT 1 as num
+        UNION ALL
+        SELECT num + 1
+        FROM seq
+        WHERE num < 9999
+    ),
+    used_numbers AS (
+        SELECT SUBSTRING(reservation_number, 8)::integer as num
+        FROM reservations
+        WHERE reservation_number LIKE year_month || '-%'
+    )
+    SELECT MIN(seq.num) INTO sequence_number
+    FROM seq
+    LEFT JOIN used_numbers ON seq.num = used_numbers.num
+    WHERE used_numbers.num IS NULL
+    LIMIT 1;
+
+    -- Format: YYYYMM-XXXX (e.g., 202402-0001)
+    NEW.reservation_number := year_month || '-' || LPAD(sequence_number::text, 4, '0');
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Create reservations table
 CREATE TABLE reservations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -13,6 +49,12 @@ CREATE TABLE reservations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL
 );
+
+-- Create trigger for reservation number generation
+CREATE TRIGGER set_reservation_number
+    BEFORE INSERT ON reservations
+    FOR EACH ROW
+    EXECUTE FUNCTION generate_reservation_number();
 
 -- Add column comments
 COMMENT ON TABLE reservations IS 'レッスン予約';
