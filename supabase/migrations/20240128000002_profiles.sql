@@ -19,7 +19,18 @@ CREATE TABLE profiles (
 COMMENT ON COLUMN profiles.role IS 'ユーザーの役割（管理者、インストラクター、生徒）';
 
 -- Enable RLS on profiles
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
+
+/*
+-- Create RLS policies for profiles
+CREATE POLICY "Profiles access policy" ON profiles
+    FOR ALL USING (
+        -- 自分自身のプロファイル、または管理者の場合はアクセス可能
+        auth.uid() = user_id 
+        OR 
+        is_admin()
+    );
+*/
 
 -- Create profiles indexes
 CREATE INDEX idx_profiles_user_id ON profiles(user_id);
@@ -39,15 +50,6 @@ BEGIN
     );
 END;
 $$;
-
--- -- Create RLS policies for profiles
--- CREATE POLICY "Profiles access policy" ON profiles
---     FOR ALL USING (
---         -- 自分自身のプロファイル、または管理者の場合はアクセス可能
---         auth.uid() = user_id 
---         OR 
---         is_admin()
---     );
 
 -- Create updated_at trigger for profiles
 CREATE TRIGGER update_profiles_updated_at

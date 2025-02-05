@@ -99,53 +99,27 @@ CREATE TRIGGER check_student_role_trigger
     EXECUTE FUNCTION check_student_role();
 
 -- Enable RLS
-ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reservations DISABLE ROW LEVEL SECURITY;
 
 -- Create policies
--- CREATE POLICY "Enable read access for all users" ON reservations
---     FOR SELECT
---     USING (true);
+/*
+CREATE POLICY "Enable read access for all users" ON reservations
+    FOR SELECT
+    USING (true);
 
--- CREATE POLICY "Enable insert for authenticated users only" ON reservations
---     FOR INSERT
---     TO authenticated
---     WITH CHECK (
---         EXISTS (
---             SELECT 1
---             FROM profiles p
---             WHERE p.id = student_profile_id
---             AND p.user_id = auth.uid()
---         )
---     );
+CREATE POLICY "Enable insert for authenticated users only" ON reservations
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
 
--- CREATE POLICY "Enable update for authenticated users" ON reservations
---     FOR UPDATE
---     TO authenticated
---     USING (
---         EXISTS (
---             SELECT 1
---             FROM profiles p
---             WHERE p.id = student_profile_id
---             AND p.user_id = auth.uid()
---         )
---     )
---     WITH CHECK (
---         EXISTS (
---             SELECT 1
---             FROM profiles p
---             WHERE p.id = student_profile_id
---             AND p.user_id = auth.uid()
---         )
---     );
+CREATE POLICY "Enable update for authenticated users" ON reservations
+    FOR UPDATE
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
 
--- CREATE POLICY "Enable delete for authenticated users" ON reservations
---     FOR DELETE
---     TO authenticated
---     USING (
---         EXISTS (
---             SELECT 1
---             FROM profiles p
---             WHERE p.id = student_profile_id
---             AND p.user_id = auth.uid()
---         )
---     ); 
+CREATE POLICY "Enable delete for authenticated users" ON reservations
+    FOR DELETE
+    TO authenticated
+    USING (true); 
+*/ 
