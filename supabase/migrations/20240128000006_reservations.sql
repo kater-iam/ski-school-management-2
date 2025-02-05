@@ -45,8 +45,8 @@ CREATE TABLE reservations (
     reservation_number VARCHAR(255) NOT NULL UNIQUE,
     status reservation_status NOT NULL DEFAULT '申し込み',
     instructor_comment TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL
 );
 
 -- Create trigger for reservation number generation
@@ -102,50 +102,50 @@ CREATE TRIGGER check_student_role_trigger
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
-CREATE POLICY "Enable read access for all users" ON reservations
-    FOR SELECT
-    USING (true);
+-- CREATE POLICY "Enable read access for all users" ON reservations
+--     FOR SELECT
+--     USING (true);
 
-CREATE POLICY "Enable insert for authenticated users only" ON reservations
-    FOR INSERT
-    TO authenticated
-    WITH CHECK (
-        EXISTS (
-            SELECT 1
-            FROM profiles p
-            WHERE p.id = student_profile_id
-            AND p.user_id = auth.uid()
-        )
-    );
+-- CREATE POLICY "Enable insert for authenticated users only" ON reservations
+--     FOR INSERT
+--     TO authenticated
+--     WITH CHECK (
+--         EXISTS (
+--             SELECT 1
+--             FROM profiles p
+--             WHERE p.id = student_profile_id
+--             AND p.user_id = auth.uid()
+--         )
+--     );
 
-CREATE POLICY "Enable update for authenticated users" ON reservations
-    FOR UPDATE
-    TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1
-            FROM profiles p
-            WHERE p.id = student_profile_id
-            AND p.user_id = auth.uid()
-        )
-    )
-    WITH CHECK (
-        EXISTS (
-            SELECT 1
-            FROM profiles p
-            WHERE p.id = student_profile_id
-            AND p.user_id = auth.uid()
-        )
-    );
+-- CREATE POLICY "Enable update for authenticated users" ON reservations
+--     FOR UPDATE
+--     TO authenticated
+--     USING (
+--         EXISTS (
+--             SELECT 1
+--             FROM profiles p
+--             WHERE p.id = student_profile_id
+--             AND p.user_id = auth.uid()
+--         )
+--     )
+--     WITH CHECK (
+--         EXISTS (
+--             SELECT 1
+--             FROM profiles p
+--             WHERE p.id = student_profile_id
+--             AND p.user_id = auth.uid()
+--         )
+--     );
 
-CREATE POLICY "Enable delete for authenticated users" ON reservations
-    FOR DELETE
-    TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1
-            FROM profiles p
-            WHERE p.id = student_profile_id
-            AND p.user_id = auth.uid()
-        )
-    ); 
+-- CREATE POLICY "Enable delete for authenticated users" ON reservations
+--     FOR DELETE
+--     TO authenticated
+--     USING (
+--         EXISTS (
+--             SELECT 1
+--             FROM profiles p
+--             WHERE p.id = student_profile_id
+--             AND p.user_id = auth.uid()
+--         )
+--     ); 
