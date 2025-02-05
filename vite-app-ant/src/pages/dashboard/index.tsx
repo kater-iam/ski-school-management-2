@@ -61,7 +61,10 @@ export const DashboardPage: React.FC = () => {
       pageSize: 100,
     },
     meta: {
-      select: "*, lessons(name, max_participants), profiles!instructor_id(first_name, last_name)",
+      select: `*,
+        lessons!inner(name, max_participants),
+        profiles!instructor_id(first_name, last_name),
+        reservations!lesson_schedule_id(status)`,
     },
   });
 
@@ -258,9 +261,9 @@ export const DashboardPage: React.FC = () => {
     },
     {
       title: "参加人数",
-      dataIndex: "current_participants",
-      render: (value: number, record: any) => {
-        const currentParticipants = value || 0;
+      render: (_: any, record: any) => {
+        const reservations = record.reservations || [];
+        const currentParticipants = reservations.filter((r: any) => r.status !== 'キャンセル').length;
         const maxParticipants = record.lessons?.max_participants || 0;
         return `${currentParticipants}/${maxParticipants}`;
       },
