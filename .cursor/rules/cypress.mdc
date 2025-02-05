@@ -1,0 +1,6 @@
+---
+description: Cypessのテストに関すること
+globs: cypress/**
+---
+- Cypressのテストは /cypress/ ディレクトリ配下で行う
+- npm run cy:run にてテストを実行する
