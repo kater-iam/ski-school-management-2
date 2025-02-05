@@ -35,12 +35,14 @@ export const LessonSchedulesShow = () => {
                     emergency_contact
                 )
             `,
-            filter: {
-                lesson_schedule_id: {
-                    eq: record?.id,
-                },
-            },
         },
+        filters:[
+            {
+                field: "lesson_schedule_id",
+                operator: "eq",
+                value: record?.id,
+            }
+        ]
     });
 
     console.log('reservationsData:', reservationsData); // デバッグ用
@@ -91,20 +93,20 @@ export const LessonSchedulesShow = () => {
                 rowKey="id"
             />
 
-            <Title level={5}>Id</Title>
+            <Title level={5}>レッスンスケジュールID</Title>
             <TextField value={record?.id} />
-            <Title level={5}>Lesson</Title>
+            <Title level={5}>レッスン</Title>
             {lessonIsLoading ? <>Loading...</> : <>{lessonData?.data?.name}</>}
-            <Title level={5}>Start Time</Title>
-            <DateField value={record?.start_time} />
-            <Title level={5}>End Time</Title>
-            <DateField value={record?.end_time} />
-            <Title level={5}>Status</Title>
+            <Title level={5}>開始時間</Title>
+            <DateField value={record?.start_time} format="YYYY年MM月DD日 HH時mm分" />
+            <Title level={5}>終了時間</Title>
+            <DateField value={record?.end_time} format="YYYY年MM月DD日 HH時mm分" />
+            <Title level={5}>ステータス</Title>
             <TextField value={record?.status} />
-            <Title level={5}>Created At</Title>
-            <DateField value={record?.created_at} />
-            <Title level={5}>Updated At</Title>
-            <DateField value={record?.updated_at} />
+            <Title level={5}>作成日時</Title>
+            <DateField value={record?.created_at} format="YYYY年MM月DD日 HH時mm分" />
+            <Title level={5}>更新日時</Title>
+            <DateField value={record?.updated_at} format="YYYY年MM月DD日 HH時mm分" />
         </Show>
     );
 };

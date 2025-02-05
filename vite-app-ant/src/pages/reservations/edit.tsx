@@ -17,7 +17,7 @@ export const ReservationsEdit = () => {
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Form.Item
-                    label="Id"
+                    label="ID"
                     name={["id"]}
                     rules={[
                         {
@@ -28,79 +28,62 @@ export const ReservationsEdit = () => {
                     <Input readOnly disabled />
                 </Form.Item>
                 <Form.Item
-                    label="Lesson Schedule"
+                    label="レッスンスケジュール"
                     name={"lesson_schedule_id"}
                     rules={[
                         {
                             required: true,
+                            message: "レッスンスケジュールを選択してください",
                         },
                     ]}
                 >
                     <Select {...lessonScheduleSelectProps} />
                 </Form.Item>
                 <Form.Item
-                    label="Reservation Number"
+                    label="予約番号"
                     name={["reservation_number"]}
                     rules={[
                         {
                             required: true,
+                            message: "予約番号を選択してください",
                         },
                     ]}
                     getValueProps={(value) => ({
                         value: value ? dayjs(value) : undefined,
                     })}
                 >
-                    <DatePicker />
+                    <DatePicker format="YYYY年MM月DD日" />
                 </Form.Item>
                 <Form.Item
-                    label="Status"
+                    label="ステータス"
                     name={["status"]}
                     rules={[
                         {
                             required: true,
+                            message: "ステータスを入力してください",
                         },
                     ]}
                 >
-                    <Input />
+                    <Select
+                        options={[
+                            { label: "申し込み", value: "申し込み" },
+                            { label: "申し込み承認", value: "申し込み承認" },
+                            { label: "受講済", value: "受講済" },
+                            { label: "キャンセル", value: "キャンセル" },
+                        ]}
+                    />
                 </Form.Item>
                 <Form.Item
-                    label="Instructor Comment"
+                    label="インストラクターコメント"
                     name={["instructor_comment"]}
                     rules={[
                         {
                             required: true,
+                            message: "インストラクターコメントを入力してください",
                         },
                     ]}
                 >
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Created At"
-                    name={["created_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    label="Updated At"
-                    name={["updated_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
                 </Form.Item>
             </Form>
         </Edit>
