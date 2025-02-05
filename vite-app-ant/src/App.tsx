@@ -60,7 +60,6 @@ import { DashboardOutlined } from "@ant-design/icons";
 function App() {
   return (
     (<BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>

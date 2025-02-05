@@ -10,68 +10,43 @@ export const InstructorSchedulesCreate = () => {
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Form.Item
-                    label="Date"
+                    label="勤務日"
                     name={["date"]}
                     rules={[
                         {
                             required: true,
+                            message: "勤務日を選択してください",
                         },
                     ]}
                     getValueProps={(value) => ({
                         value: value ? dayjs(value) : undefined,
                     })}
                 >
-                    <DatePicker />
+                    <DatePicker format="YYYY年MM月DD日" />
                 </Form.Item>
                 <Form.Item
-                    label="Start Time"
+                    label="開始時間"
                     name={["start_time"]}
                     rules={[
                         {
                             required: true,
+                            message: "開始時間を入力してください",
                         },
                     ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="End Time"
+                    label="終了時間"
                     name={["end_time"]}
                     rules={[
                         {
                             required: true,
+                            message: "終了時間を入力してください",
                         },
                     ]}
                 >
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Created At"
-                    name={["created_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    label="Updated At"
-                    name={["updated_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
                 </Form.Item>
             </Form>
         </Create>
