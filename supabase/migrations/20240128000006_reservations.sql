@@ -99,27 +99,58 @@ CREATE TRIGGER check_student_role_trigger
     EXECUTE FUNCTION check_student_role();
 
 -- Enable RLS
-ALTER TABLE reservations DISABLE ROW LEVEL SECURITY;
+ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
 
--- Create policies
-/*
-CREATE POLICY "Enable read access for all users" ON reservations
-    FOR SELECT
-    USING (true);
-
-CREATE POLICY "Enable insert for authenticated users only" ON reservations
-    FOR INSERT
+-- Create RLS policies for reservations
+CREATE POLICY "管理者はすべての操作が可能" ON reservations
+    FOR ALL
     TO authenticated
-    WITH CHECK (true);
+    USING (is_admin())
+    WITH CHECK (is_admin());
 
-CREATE POLICY "Enable update for authenticated users" ON reservations
+CREATE POLICY "インストラクターは担当レッスンの予約を閲覧・更新可能" ON reservations
+    FOR SELECT
+    TO authenticated
+    USING (
+        is_instructor() AND 
+        lesson_schedule_id IN (
+            SELECT id FROM lesson_schedules 
+            WHERE instructor_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "インストラクターは担当レッスンの予約を更新可能" ON reservations
     FOR UPDATE
     TO authenticated
-    USING (true)
-    WITH CHECK (true);
+    USING (
+        is_instructor() AND 
+        lesson_schedule_id IN (
+            SELECT id FROM lesson_schedules 
+            WHERE instructor_id = auth.uid()
+        )
+    )
+    WITH CHECK (
+        is_instructor() AND 
+        lesson_schedule_id IN (
+            SELECT id FROM lesson_schedules 
+            WHERE instructor_id = auth.uid()
+        )
+    );
 
-CREATE POLICY "Enable delete for authenticated users" ON reservations
-    FOR DELETE
+CREATE POLICY "受講者は自身の予約の操作が可能" ON reservations
+    FOR ALL
     TO authenticated
-    USING (true); 
-*/ 
+    USING (
+        is_student() AND 
+        student_profile_id IN (
+            SELECT id FROM profiles 
+            WHERE user_id = auth.uid()
+        )
+    )
+    WITH CHECK (
+        is_student() AND 
+        student_profile_id IN (
+            SELECT id FROM profiles 
+            WHERE user_id = auth.uid()
+        )
+    ); 
