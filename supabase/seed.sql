@@ -131,20 +131,20 @@ BEGIN
                         uuid_generate_v4(),
                         lesson_id,
                         instructor_id,
-                        current_lesson_date + 
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
-                            ELSE INTERVAL '17 hours'
-                        END,
-                        current_lesson_date + 
+                            WHEN time_slot = 0 THEN INTERVAL '1 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '4 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '6 hours'
+                            ELSE INTERVAL '8 hours'
+                        END)::timestamp with time zone,
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
-                            ELSE INTERVAL '19 hours'
-                        END,
+                            WHEN time_slot = 0 THEN INTERVAL '3 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '6 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '8 hours'
+                            ELSE INTERVAL '10 hours'
+                        END)::timestamp with time zone,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status
@@ -303,20 +303,20 @@ BEGIN
                         uuid_generate_v4(),
                         lesson_id,
                         instructor_id,
-                        current_lesson_date + 
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
-                            ELSE INTERVAL '17 hours'
-                        END,
-                        current_lesson_date + 
+                            WHEN time_slot = 0 THEN INTERVAL '1 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '4 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '6 hours'
+                            ELSE INTERVAL '8 hours'
+                        END)::timestamp with time zone,
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
-                            ELSE INTERVAL '19 hours'
-                        END,
+                            WHEN time_slot = 0 THEN INTERVAL '3 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '6 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '8 hours'
+                            ELSE INTERVAL '10 hours'
+                        END)::timestamp with time zone,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status

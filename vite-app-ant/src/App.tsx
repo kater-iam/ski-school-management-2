@@ -83,31 +83,46 @@ function App() {
                   list: "/lessons",
                   create: "/lessons/create",
                   edit: "/lessons/edit/:id",
-                  show: "/lessons/show/:id"
+                  show: "/lessons/show/:id",
+                  meta: {
+                    label: "レッスン"
+                  }
                 }, {
                   name: "instructor_schedules",
                   list: "/instructor_schedules",
                   create: "/instructor_schedules/create",
                   edit: "/instructor_schedules/edit/:id",
-                  show: "/instructor_schedules/show/:id"
+                  show: "/instructor_schedules/show/:id",
+                  meta: {
+                    label: "インストラクタースケジュール"
+                  }
                 }, {
                   name: "lesson_schedules",
                   list: "/lesson_schedules",
                   create: "/lesson_schedules/create",
                   edit: "/lesson_schedules/edit/:id",
-                  show: "/lesson_schedules/show/:id"
+                  show: "/lesson_schedules/show/:id",
+                  meta: {
+                    label: "レッスンスケジュール"
+                  }
                 }, {
                   name: "reservations",
                   list: "/reservations",
                   create: "/reservations/create",
                   edit: "/reservations/edit/:id",
-                  show: "/reservations/show/:id"
+                  show: "/reservations/show/:id",
+                  meta: {
+                    label: "予約"
+                  }
                 }, {
                   name: "profiles",
                   list: "/profiles",
                   create: "/profiles/create",
                   edit: "/profiles/edit/:id",
-                  show: "/profiles/show/:id"
+                  show: "/profiles/show/:id",
+                  meta: {
+                    label: "プロフィール"
+                  }
                 }]}
                 options={{
                   syncWithLocation: true,

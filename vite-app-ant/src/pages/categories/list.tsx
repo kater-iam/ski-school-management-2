@@ -16,10 +16,10 @@ export const CategoryList = () => {
   return (
     <List>
       <Table {...tableProps} rowKey="id">
-        <Table.Column dataIndex="id" title={"ID"} />
-        <Table.Column dataIndex="title" title={"title"} />
+        <Table.Column dataIndex="id" title="ID" />
+        <Table.Column dataIndex="title" title="タイトル" />
         <Table.Column
-          title={"Actions"}
+          title="操作"
           dataIndex="actions"
           render={(_, record: BaseRecord) => (
             <Space>
