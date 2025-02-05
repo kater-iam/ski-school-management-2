@@ -9,8 +9,8 @@ CREATE TABLE lesson_schedules (
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
     status lesson_schedule_status NOT NULL DEFAULT 'open',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL
 );
 
 -- Add comments to lesson_schedules columns

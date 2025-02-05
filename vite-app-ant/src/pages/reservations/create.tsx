@@ -43,6 +43,7 @@ export const ReservationsCreate = () => {
                     rules={[
                         {
                             required: true,
+                            message: "対象レッスンを選択してください"
                         },
                     ]}
                 >
@@ -54,6 +55,7 @@ export const ReservationsCreate = () => {
                     rules={[
                         {
                             required: true,
+                            message: "ステータスを選択してください"
                         },
                     ]}
                 >

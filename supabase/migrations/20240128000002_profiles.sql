@@ -10,8 +10,8 @@ CREATE TABLE profiles (
     phone VARCHAR(20),
     emergency_contact VARCHAR(20),
     role profile_role NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'JST' AT TIME ZONE 'Asia/Tokyo') NOT NULL,
     CONSTRAINT fk_profiles_user FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
@@ -40,14 +40,14 @@ BEGIN
 END;
 $$;
 
--- Create RLS policies for profiles
-CREATE POLICY "Profiles access policy" ON profiles
-    FOR ALL USING (
-        -- 自分自身のプロファイル、または管理者の場合はアクセス可能
-        auth.uid() = user_id 
-        OR 
-        is_admin()
-    );
+-- -- Create RLS policies for profiles
+-- CREATE POLICY "Profiles access policy" ON profiles
+--     FOR ALL USING (
+--         -- 自分自身のプロファイル、または管理者の場合はアクセス可能
+--         auth.uid() = user_id 
+--         OR 
+--         is_admin()
+--     );
 
 -- Create updated_at trigger for profiles
 CREATE TRIGGER update_profiles_updated_at

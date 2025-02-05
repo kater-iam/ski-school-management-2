@@ -1,5 +1,5 @@
 import React from "react";
-import { useShow, useOne, useMany } from "@refinedev/core";
+import { useShow, useOne, useList } from "@refinedev/core";
 import { Show, TagField, TextField, DateField } from "@refinedev/antd";
 import { Typography, Table } from "antd";
 
@@ -19,14 +19,22 @@ export const LessonSchedulesShow = () => {
         },
     });
 
-    const { data: reservationsData, isLoading: reservationsIsLoading } = useMany({
+    const { data: reservationsData, isLoading: reservationsIsLoading } = useList({
         resource: "reservations",
-        ids: [],
         queryOptions: {
             enabled: !!record?.id,
         },
         meta: {
-            select: "*, profiles(*)",
+            select: `
+                *,
+                profiles!student_profile_id (
+                    id,
+                    first_name,
+                    last_name,
+                    phone,
+                    emergency_contact
+                )
+            `,
             filter: {
                 lesson_schedule_id: {
                     eq: record?.id,
@@ -35,22 +43,41 @@ export const LessonSchedulesShow = () => {
         },
     });
 
+    console.log('reservationsData:', reservationsData); // デバッグ用
+
     const reservationsColumns = [
         {
             title: "予約者名",
-            dataIndex: ["profiles", "name"],
+            dataIndex: ["profiles"],
             key: "name",
+            render: (profile: any) => profile ? `${profile.last_name} ${profile.first_name}` : "-",
         },
         {
-            title: "メールアドレス",
-            dataIndex: ["profiles", "email"],
-            key: "email",
+            title: "電話番号",
+            dataIndex: ["profiles", "phone"],
+            key: "phone",
+            render: (phone: string) => phone || "-",
+        },
+        {
+            title: "緊急連絡先",
+            dataIndex: ["profiles"],
+            key: "emergency_contact",
+            render: (profile: any) => 
+                profile?.emergency_contact_name && profile?.emergency_contact_phone
+                    ? `${profile.emergency_contact_name} (${profile.emergency_contact_phone})`
+                    : "-",
+        },
+        {
+            title: "予約ステータス",
+            dataIndex: "status",
+            key: "status",
+            render: (status: string) => status || "-",
         },
         {
             title: "予約日時",
             dataIndex: "created_at",
             key: "created_at",
-            render: (value: string) => <DateField value={value} format="YYYY年MM月DD日 HH時mm分" />,
+            render: (value: string) => value ? <DateField value={value} format="YYYY年MM月DD日 HH時mm分" /> : "-",
         },
     ];
 

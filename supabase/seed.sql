@@ -81,8 +81,7 @@ DECLARE
     year INT;
     month INT;
     day INT;
-    student_user_id UUID;
-    student_id UUID;
+    student_profile_id UUID;
 BEGIN
     -- 2024年から2035年までのループ
     FOR year IN 2024..2035 LOOP
@@ -132,20 +131,20 @@ BEGIN
                         uuid_generate_v4(),
                         lesson_id,
                         instructor_id,
-                        current_lesson_date + 
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
-                            ELSE INTERVAL '17 hours'
-                        END,
-                        current_lesson_date + 
+                            WHEN time_slot = 0 THEN INTERVAL '1 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '4 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '6 hours'
+                            ELSE INTERVAL '8 hours'
+                        END)::timestamp with time zone,
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
-                            ELSE INTERVAL '19 hours'
-                        END,
+                            WHEN time_slot = 0 THEN INTERVAL '3 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '6 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '8 hours'
+                            ELSE INTERVAL '10 hours'
+                        END)::timestamp with time zone,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status
@@ -182,7 +181,7 @@ BEGIN
                             ELSE 1
                         END LOOP
                             -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
-                            SELECT id INTO student_user_id 
+                            SELECT id INTO student_profile_id 
                             FROM profiles 
                             WHERE role = 'student' 
                             ORDER BY 
@@ -193,22 +192,17 @@ BEGIN
                                 END 
                             LIMIT 1;
 
-                            -- student_idは同じプロフィールのIDを使用
-                            SELECT student_user_id INTO student_id;
-
                             -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
                             INSERT INTO reservations (
                                 id,
                                 lesson_schedule_id,
-                                user_id,
-                                student_id,
+                                student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
                                 uuid_generate_v4(),
                                 schedule_id,
-                                student_user_id,
-                                student_id,
+                                student_profile_id,
                                 CASE 
                                     WHEN current_lesson_date < CURRENT_DATE THEN
                                         -- 過去の予約のステータス
@@ -309,20 +303,20 @@ BEGIN
                         uuid_generate_v4(),
                         lesson_id,
                         instructor_id,
-                        current_lesson_date + 
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '10 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '13 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '15 hours'
-                            ELSE INTERVAL '17 hours'
-                        END,
-                        current_lesson_date + 
+                            WHEN time_slot = 0 THEN INTERVAL '1 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '4 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '6 hours'
+                            ELSE INTERVAL '8 hours'
+                        END)::timestamp with time zone,
+                        (current_lesson_date + 
                         CASE 
-                            WHEN time_slot = 0 THEN INTERVAL '12 hours'
-                            WHEN time_slot = 1 THEN INTERVAL '15 hours'
-                            WHEN time_slot = 2 THEN INTERVAL '17 hours'
-                            ELSE INTERVAL '19 hours'
-                        END,
+                            WHEN time_slot = 0 THEN INTERVAL '3 hours'
+                            WHEN time_slot = 1 THEN INTERVAL '6 hours'
+                            WHEN time_slot = 2 THEN INTERVAL '8 hours'
+                            ELSE INTERVAL '10 hours'
+                        END)::timestamp with time zone,
                         CASE 
                             WHEN current_lesson_date < CURRENT_DATE THEN 'closed'::lesson_schedule_status
                             ELSE 'open'::lesson_schedule_status
@@ -359,7 +353,7 @@ BEGIN
                             ELSE 1
                         END LOOP
                             -- ランダムな生徒を選択（特定の生徒は頻繁に予約する傾向を持たせる）
-                            SELECT id INTO student_user_id 
+                            SELECT id INTO student_profile_id 
                             FROM profiles 
                             WHERE role = 'student' 
                             ORDER BY 
@@ -370,22 +364,17 @@ BEGIN
                                 END 
                             LIMIT 1;
 
-                            -- student_idは同じプロフィールのIDを使用
-                            SELECT student_user_id INTO student_id;
-
                             -- 予約ステータスを設定（過去と未来で異なるステータスを設定）
                             INSERT INTO reservations (
                                 id,
                                 lesson_schedule_id,
-                                user_id,
-                                student_id,
+                                student_profile_id,
                                 status,
                                 instructor_comment
                             ) VALUES (
                                 uuid_generate_v4(),
                                 schedule_id,
-                                student_user_id,
-                                student_id,
+                                student_profile_id,
                                 CASE 
                                     WHEN current_lesson_date < CURRENT_DATE THEN
                                         -- 過去の予約のステータス
