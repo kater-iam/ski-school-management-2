@@ -21,4 +21,18 @@ COMMENT ON COLUMN lessons.max_participants IS '最大参加人数';
 CREATE TRIGGER update_lessons_updated_at
     BEFORE UPDATE ON lessons
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Enable RLS
+ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies for lessons
+CREATE POLICY "誰でも閲覧可能" ON lessons
+    FOR SELECT
+    USING (true);
+
+CREATE POLICY "管理者はすべての操作が可能" ON lessons
+    FOR ALL
+    TO authenticated
+    USING (is_admin())
+    WITH CHECK (is_admin()); 
