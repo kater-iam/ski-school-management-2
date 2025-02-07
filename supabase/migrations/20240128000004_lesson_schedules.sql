@@ -29,4 +29,24 @@ CREATE INDEX idx_lesson_schedules_start_time ON lesson_schedules(start_time);
 CREATE TRIGGER update_lesson_schedules_updated_at
     BEFORE UPDATE ON lesson_schedules
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Enable RLS
+ALTER TABLE lesson_schedules ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies for lesson_schedules
+CREATE POLICY "誰でも閲覧可能" ON lesson_schedules
+    FOR SELECT
+    USING (true);
+
+CREATE POLICY "管理者はすべての操作が可能" ON lesson_schedules
+    FOR ALL
+    TO authenticated
+    USING (is_admin())
+    WITH CHECK (is_admin());
+
+CREATE POLICY "インストラクターは自身が担当するレッスンを更新可能" ON lesson_schedules
+    FOR UPDATE
+    TO authenticated
+    USING (is_instructor() AND instructor_id = auth.uid())
+    WITH CHECK (is_instructor() AND instructor_id = auth.uid()); 

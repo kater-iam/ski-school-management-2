@@ -18,19 +18,32 @@ CREATE TABLE profiles (
 -- Add comment to role column
 COMMENT ON COLUMN profiles.role IS 'ユーザーの役割（管理者、インストラクター、生徒）';
 
--- Enable RLS on profiles
-ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
+-- Enable RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
-/*
 -- Create RLS policies for profiles
-CREATE POLICY "Profiles access policy" ON profiles
-    FOR ALL USING (
-        -- 自分自身のプロファイル、または管理者の場合はアクセス可能
-        auth.uid() = user_id 
-        OR 
-        is_admin()
-    );
-*/
+CREATE POLICY "管理者はすべての操作が可能" ON profiles
+    FOR ALL
+    TO authenticated
+    USING (is_admin())
+    WITH CHECK (is_admin());
+
+CREATE POLICY "インストラクターは全プロファイルを閲覧可能" ON profiles
+    FOR SELECT
+    TO authenticated
+    USING (is_instructor());
+
+CREATE POLICY "インストラクターは自身のプロファイルを更新可能" ON profiles
+    FOR UPDATE
+    TO authenticated
+    USING (is_instructor() AND user_id = auth.uid())
+    WITH CHECK (is_instructor() AND user_id = auth.uid());
+
+CREATE POLICY "受講者は自身のプロファイルのみアクセス可能" ON profiles
+    FOR ALL
+    TO authenticated
+    USING (is_student() AND user_id = auth.uid())
+    WITH CHECK (is_student() AND user_id = auth.uid());
 
 -- Create profiles indexes
 CREATE INDEX idx_profiles_user_id ON profiles(user_id);

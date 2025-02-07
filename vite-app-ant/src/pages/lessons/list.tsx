@@ -17,27 +17,29 @@ export const LessonsList = () => {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
-                <Table.Column dataIndex="name" title="Name" />
-                <Table.Column dataIndex="description" title="Description" />
-                <Table.Column dataIndex="duration" title="Duration" />
-                <Table.Column dataIndex="price" title="Price" />
+                <Table.Column dataIndex="id" title="Id" className="display-none" />
+                <Table.Column dataIndex="name" title="レッスン名" />
+                <Table.Column dataIndex="description" title="概要" />
+                <Table.Column dataIndex="duration" title="レッスン時間（分）" />
+                <Table.Column dataIndex="price" title="価格（円）" />
                 <Table.Column
                     dataIndex="max_participants"
-                    title="Max Participants"
+                    title="最大人数"
                 />
                 <Table.Column
                     dataIndex={["created_at"]}
                     title="Created At"
+                    className="display-none"
                     render={(value: any) => <DateField value={value} />}
                 />
                 <Table.Column
                     dataIndex={["updated_at"]}
                     title="Updated At"
+                    className="display-none"
                     render={(value: any) => <DateField value={value} />}
                 />
                 <Table.Column
-                    title="Actions"
+                    title="操作"
                     dataIndex="actions"
                     render={(_, record: BaseRecord) => (
                         <Space>

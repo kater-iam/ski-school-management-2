@@ -23,4 +23,25 @@ CREATE INDEX idx_instructor_schedules_date ON instructor_schedules(date);
 CREATE TRIGGER update_instructor_schedules_updated_at
     BEFORE UPDATE ON instructor_schedules
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Enable RLS
+ALTER TABLE instructor_schedules ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies for instructor_schedules
+CREATE POLICY "管理者はすべての操作が可能" ON instructor_schedules
+    FOR ALL
+    TO authenticated
+    USING (is_admin())
+    WITH CHECK (is_admin());
+
+CREATE POLICY "インストラクターは自身のスケジュールの操作が可能" ON instructor_schedules
+    FOR ALL
+    TO authenticated
+    USING (is_instructor() AND instructor_id = auth.uid())
+    WITH CHECK (is_instructor() AND instructor_id = auth.uid());
+
+CREATE POLICY "受講者はすべてのスケジュールを閲覧可能" ON instructor_schedules
+    FOR SELECT
+    TO authenticated
+    USING (is_student()); 
