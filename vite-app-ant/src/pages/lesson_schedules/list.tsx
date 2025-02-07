@@ -25,10 +25,10 @@ export const LessonSchedulesList = () => {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
+                <Table.Column dataIndex="id" title="Id" className="display-none" />
                 <Table.Column
                     dataIndex={["lesson_id"]}
-                    title="Lesson"
+                    title="レッスン名"
                     render={(value) =>
                         lessonIsLoading ? (
                             <>Loading...</>
@@ -41,27 +41,29 @@ export const LessonSchedulesList = () => {
 
                 <Table.Column
                     dataIndex={["start_time"]}
-                    title="Start Time"
-                    render={(value: any) => <DateField value={value} />}
+                    title="開始時刻"
+                    render={(value: any) => <DateField value={value} format="YYYY年MM月DD日 HH時mm分" />}
                 />
                 <Table.Column
                     dataIndex={["end_time"]}
-                    title="End Time"
-                    render={(value: any) => <DateField value={value} />}
+                    title="終了時刻"
+                    render={(value: any) => <DateField value={value} format="YYYY年MM月DD日 HH時mm分" />}
                 />
                 <Table.Column dataIndex="status" title="Status" />
                 <Table.Column
                     dataIndex={["created_at"]}
                     title="Created At"
+                    className="display-none"
                     render={(value: any) => <DateField value={value} />}
                 />
                 <Table.Column
                     dataIndex={["updated_at"]}
                     title="Updated At"
+                    className="display-none"
                     render={(value: any) => <DateField value={value} />}
                 />
                 <Table.Column
-                    title="Actions"
+                    title="操作"
                     dataIndex="actions"
                     render={(_, record: BaseRecord) => (
                         <Space>

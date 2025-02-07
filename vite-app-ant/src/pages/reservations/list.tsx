@@ -1,112 +1,100 @@
 import React from "react";
-import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Form, Input, Select, DatePicker } from "antd";
-import dayjs from "dayjs";
+import { BaseRecord, useMany } from "@refinedev/core";
+import {
+    useTable,
+    List,
+    EditButton,
+    ShowButton,
+    DateField,
+    CreateButton,
+} from "@refinedev/antd";
+import { Table, Space } from "antd";
 
 export const ReservationsList = () => {
-    const { formProps, saveButtonProps, query } = useForm();
+    const { tableProps } = useTable({
+        syncWithLocation: true,
+    });
 
-    const Data = query?.data?.data;
+    const { data: lessonScheduleData, isLoading: lessonScheduleIsLoading } = useMany({
+        resource: "lesson_schedules",
+        ids: tableProps?.dataSource?.map((item) => item?.lesson_schedule_id) ?? [],
+        queryOptions: {
+            enabled: !!tableProps?.dataSource,
+        },
+        meta: {
+            select: "*, lessons(name)"
+        }
+    });
 
-    const { selectProps: lessonSelectProps } = useSelect({
-        resource: "lessons",
-        defaultValue: Data?.lesson_id,
-        optionLabel: "name",
+    const { data: profileData, isLoading: profileIsLoading } = useMany({
+        resource: "profiles",
+        ids: tableProps?.dataSource?.map((item) => item?.student_profile_id) ?? [],
+        queryOptions: {
+            enabled: !!tableProps?.dataSource,
+        },
     });
 
     return (
-        <Edit saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical">
-                <Form.Item
-                    label="Id"
-                    name={["id"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input readOnly disabled />
-                </Form.Item>
-                <Form.Item
-                    label="Lesson"
-                    name={"lesson_id"}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...lessonSelectProps} />
-                </Form.Item>
-                <Form.Item
-                    label="Start Time"
-                    name={["start_time"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    label="End Time"
-                    name={["end_time"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    label="Status"
-                    name={["status"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Created At"
-                    name={["created_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    label="Updated At"
-                    name={["updated_at"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                    getValueProps={(value) => ({
-                        value: value ? dayjs(value) : undefined,
-                    })}
-                >
-                    <DatePicker />
-                </Form.Item>
-            </Form>
-        </Edit>
+        <List>
+            <Table {...tableProps} rowKey="id">
+                <Table.Column dataIndex="id" title="予約ID" />
+                <Table.Column
+                    dataIndex="reservation_number"
+                    title="予約番号"
+                />
+                <Table.Column
+                    dataIndex={["lesson_schedule_id"]}
+                    title="レッスン"
+                    render={(value) =>
+                        lessonScheduleIsLoading ? (
+                            <>Loading...</>
+                        ) : (
+                            lessonScheduleData?.data?.find((item) => item.id === value)?.lessons?.name
+                        )
+                    }
+                />
+                <Table.Column
+                    dataIndex={["student_profile_id"]}
+                    title="予約者"
+                    render={(value) =>
+                        profileIsLoading ? (
+                            <>Loading...</>
+                        ) : (
+                            (() => {
+                                const profile = profileData?.data?.find((item) => item.id === value);
+                                return profile ? `${profile.last_name} ${profile.first_name}` : "";
+                            })()
+                        )
+                    }
+                />
+                <Table.Column
+                    dataIndex="status"
+                    title="ステータス"
+                />
+                <Table.Column
+                    dataIndex={["created_at"]}
+                    title="予約日時"
+                    render={(value: any) => <DateField value={value} format="YYYY年MM月DD日 HH時mm分" />}
+                />
+                <Table.Column
+                    title="操作"
+                    dataIndex="actions"
+                    render={(_, record: BaseRecord) => (
+                        <Space>
+                            <EditButton
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                            />
+                            <ShowButton
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                            />
+                        </Space>
+                    )}
+                />
+            </Table>
+        </List>
     );
 };
